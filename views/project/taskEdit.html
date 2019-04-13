@@ -1,0 +1,49 @@
+<!-- ./wrapper -->
+<div id="modal-addPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">新增/编辑任务</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="form_add" action="<<<urlfor "ProjectController.TaskEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>任务ID</td>
+                                <td><input  v-model="currentTask.taskid" id="taskid" name="taskid" type="text" class="form-control" placeholder="输入任务ID"></td>
+                            </tr>
+                            <tr>
+                                <td>任务内容</td>
+                                <td><input  v-model="currentTask.content" id="content" name="content" type="text" class="form-control" placeholder="输入任务内容"></td>
+                            </tr>
+                            <tr>
+                                <td>完成条件</td>
+                                <td><input  v-model="currentTask.info" id="info" name="info" type="text" class="form-control" placeholder="输入任务完成条件"></td>
+                            </tr>
+                            <tr>
+                                <td>前置任务ID</td>
+                                <td><input v-model="currentTask.before" id="before" name="before" type="text" class="form-control" placeholder="输入前置任务ID"></td>
+                            </tr>
+                            <tr>
+                                <td>后置任务ID</td>
+                                <td><input v-model="currentTask.after" id="after" name="after" type="text" class="form-control" placeholder="输入后置任务ID"></td>
+                            </tr>
+                            <tr>
+                                <td>奖励ID</td>
+                                <td><input v-model="currentTask.prize" id="prize" name="prize" type="text" class="form-control" placeholder="奖励ID"></td>
+                            </tr>
+                            <input v-model="currentTask.id" id="id" name="id" type="hidden">
+                            <input v-model="currentTask.project_id" id="project_id" name="project_id" type="hidden">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

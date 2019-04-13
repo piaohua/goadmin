@@ -1,0 +1,97 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header with-border">
+</div>
+<!-- /.box-header -->
+
+<!-- form start -->
+<form id="form" class="form-horizontal" role="form" method="post">
+    <div class="box-body">
+
+        <div class="form-group">
+            <label for="project_id" class="col-sm-2 control-label">ProjectID</label>
+            <div class="col-sm-6">
+                <select v-model="currentProjectID" class="form-control col-sm-6" id="project_id" name="project_id" disabled>
+                    <option value="0">全部</option>
+                    <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+                </select>
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="openid" class="col-sm-2 control-label">OpenID</label>
+
+            <div class="col-sm-6">
+                <input v-model='currentOpenID' type="text" class="form-control" id="openid" name="openid" placeholder="OpenID">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="userid" class="col-sm-2 control-label">UserID</label>
+
+            <div class="col-sm-6">
+                <input v-model='currentUserID' type="text" class="form-control" id="userid" name="userid" placeholder="UserID">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="source_id" class="col-sm-2 control-label">SourceID</label>
+
+            <div class="col-sm-6">
+                <input v-model='currentSourceID' type="text" class="form-control" id="source_id" name="source_id" placeholder="SourceID">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="dateat" class="col-sm-2 control-label">过期时间</label>
+            <div class="input-group date col-sm-6">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input v-model='currentDateat' name="dateat" class="form-control pull-right" id="datepicker" type="text" placeholder="请输入日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+
+
+        <div class="form-group">
+            <label for="token" class="col-sm-2 control-label">Token</label>
+
+            <div class="col-sm-6">
+                <textarea v-model='currentToken' class="form-control" id="token" name="token" placeholder="Token"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-danger">Submit</button>
+        </div>
+    </div>
+</form>
+<!-- /.box -->
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueProjectToken = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'令牌签发',
+            menuTitle:'项目管理',
+            projectList: <<<.Projects>>>,
+            currentProjectID: <<<.ProjectID>>>,
+            currentPId: <<<.projectId>>>,
+            currentToken: <<<.TokenData>>>,
+            currentOpenID: <<<.OpenID>>>,
+            currentUserID: <<<.UserID>>>,
+            currentSourceID: <<<.SourceID>>>,
+            currentDateat: <<<.Dateat>>>
+        },
+        methods:{
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                this.currentProjectID = this.currentPId;
+            })
+        }
+    });
+</script>

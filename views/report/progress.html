@@ -1,0 +1,307 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+
+        <div class="form-group">
+            <label for="project_id">ProjectID:</label>
+            <select v-model="currentProjectID" class="form-control" id="project_id" name="project_id" disabled>
+                <option value="0">全部</option>
+                <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="dateat">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="dateat" class="form-control pull-right" id="datepicker" type="text" value="<<<.Dateat>>>" placeholder="请输入日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+         <!-- 导出excel -->
+         <button type="button" class="btn btn-info" @click="export2Excel">导出</button>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+
+        <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="activate to sort column descending">日期</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">项目</th>
+                <template v-if="currentProjectID == 17">
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">开始loading</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">结束loading</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">开始按钮</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">难度选择</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">关卡选择</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">完成拼块</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">结束新手引导</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">登录人数</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">老玩家开始loading</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">老玩家结束loading</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">老玩家难度选择</th>
+                </template>
+                <template v-else-if="currentProjectID == 20">
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">用户注册</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">见到主界面</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">开始加载配置资源</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">加载配置资源结束</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击开始按钮</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">拖动拼块</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">完成所有拼块</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">进入下一关</th>
+                </template>
+                <template v-else-if="currentProjectID == 11">
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">内容</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">当前人数</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">累计流失率</th>
+                    <!--th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">开始</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">1关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">2关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">升级</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">3关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">领取2级武器</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">4关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">合成</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">5关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">8关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">10关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">13关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">攻击15关宠物</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击宠物</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">宠物升级</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">18关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">20关</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击黄金武器</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">黄金武器激活</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">挂机</th-->
+                </template>
+                <template v-else-if="currentProjectID == 22">
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">加载至主界面</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击开始游戏</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">新手步骤1(点击好的)</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">新手步骤2(拖动纸牌)</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">新手步骤3(纸牌合成)</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">新手步骤4(连续合并)</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">新手步骤5(合成2048)</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">登录人数</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">每日福利</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">拖动纸牌</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">纸牌合成</th>
+                </template>
+                <template v-else>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">登录人数</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">loading节点1</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">loading节点2</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">进入新手</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">完成节点1</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">完成节点2</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">完成新手</th>
+                    <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击新增</th>
+                </template>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="val in even(progressList)" v-cloak>
+                <tr role="row" class="odd" v-if="currentProjectID != 11">
+                    <td>{{ val.today }}</td>
+                    <td>{{ val.project_id }}</td>
+                    <td>{{ val.data.regist }}</td>
+                    <td>{{ val.data.type1 }}</td>
+                    <td>{{ val.data.type2 }}</td>
+                    <td>{{ val.data.type3 }}</td>
+                    <td>{{ val.data.type4 }}</td>
+                    <td>{{ val.data.type5 }}</td>
+                    <td>{{ val.data.type6 }}</td>
+                    <td>{{ val.data.type7 }}</td>
+                    <template v-if="currentProjectID == 17 || currentProjectID == 22">
+                        <td>{{ val.data.login }}</td>
+                        <td>{{ val.data.type8 }}</td>
+                        <td>{{ val.data.type9 }}</td>
+                        <td>{{ val.data.type10 }}</td>
+                    </template>
+                    <template v-if="currentProjectID == 20">
+                        <td>{{ val.data.type8 }}</td>
+                    </template>
+                </tr>
+                <template v-if="currentProjectID == 11">
+                <template v-for="(n, i) in Types">
+                    <tr role="row" class="odd">
+                        <td>{{ val.today }}</td>
+                        <td>{{ val.project_id }}</td>
+                        <td>{{ val.data.regist }}</td>
+                        <td>{{ typeNames[n] }}</td>
+                        <td>{{ val.data['type'+n] }}</td>
+                        <!--td v-if="n != 'type1'">{{ format2((val.data["type1"] - val.data[n]), val.data["type1"]) }}%</td>
+                        <td v-else>{{ format2((val.data["regist"] - val.data["type1"]), val.data["regist"]) }}%</td-->
+                        <td>{{ format2((val.data["regist"] - val.data['type'+n]), val.data["regist"]) }}%</td>
+                    </tr>
+                </template>
+                </template>
+            </template>
+        </tbody>
+
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script type="text/javascript" src="https://unpkg.com/xlsx/dist/xlsx.full.min.js">
+    import XLSX from 'xlsx'
+</script>
+<script type="text/javascript" src="https://unpkg.com/blob.js@1.0.1/Blob.js"></script>
+<script type="text/javascript" src="https://unpkg.com/file-saver@1.3.3/FileSaver.js">
+    import FileSaver from 'file-saver'
+</script>
+
+<script type="text/javascript">
+    var vueReportProgress = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'点击转化',
+            menuTitle:'统计管理',
+            form_url: <<<urlfor "ReportController.Progress">>>,
+            projectList: <<<.Projects>>>,
+            currentProjectID: <<<.ProjectID>>>,
+            currentPId: <<<.projectId>>>,
+            progressList: <<<.ProgressData>>>,
+            Types:[],
+            typeNames:[],
+            Types1:[1,2,3,4,5,6,7,8,21,9,22,10,11,23,24,12,13,14,15,16,17,25,26,18,19,27,28,20],
+            typeNames1: ["","点击开始按钮" ,"到达第一关" ,"到达第二关" ,"点击升级按钮" ,"到达第三关" ,"点击领取二级武器" ,"到达第四关" ,"点击合成图标" ,"到达第五关" ,"到达第8关" ,"到达第10关" ,"到达第13关" ,"攻击15关宠物" ,"点击宠物图标" ,"点击第一个宠物升级按钮" ,"到达第18关" ,"到达第20关" ,"点击黄金武器图标" ,"点击黄金武器激活按钮" ,"点击挂机按钮","点击合成界面返回按钮" ,"到达第六关" ,"进入到关卡选择地图" ,"到达第11关" ,"到达第21关" ,"到达第30关" ,"到达第40关" ,"到达第41关"],
+            Types2:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],
+            typeNames2: ["","到达第1关","到达第2关","到达第3关","点击升级按钮","到达第4关","到达第5关","到达第6关","到达第9关","到达第10关","点击第10关重新挑战按钮","进入到关卡选择地图","到达第11关","到达第12关","点击领取二级武器","到达第13关","点击合成图标","点击合成界面返回按钮","到达第20关","点击第20关重新挑战按钮","到达第21关","点击TNT技能","到达第30关","点击第30关重新挑战按钮","到达第31关","点击黄金武器图标","点击黄金武器激活按钮","到达第40关","到达第41关","点击挂机按钮"],
+            Types3:[1,2,3,4,5,6,7,8,9,10,12,13,15,18,19,20,22,23,24,25,26,27,28],
+            pagination:<<<.Pagination>>>
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        created: function () {
+            this.initTypes();
+        },
+        methods:{
+            export2Excel () {
+                /* generate workbook object from table */
+                var wb = XLSX.utils.table_to_book(document.querySelector('#example2'))
+                /* get binary string as output */
+                var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+                try {
+                    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), this.pageTitle + '.xlsx')
+                } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+                return wbout
+            },
+            initTypes() {
+                var time;
+                if (this.progressList.length > 0) {
+                    time = this.progressList[0].today;
+                } else {
+                    var time = new Date();
+                    var y = time.getFullYear();//年
+                    var m = time.getMonth() + 1;//月
+                    var d = time.getDate();//日
+                    time = y * 10000 + m * 100 + d;
+                }
+                //console.log(time);
+                if (time > 20190220) {
+                    this.Types = this.Types3;
+                    this.typeNames = this.typeNames2;
+                } else if (time > 20190215) {
+                    this.Types = this.Types2;
+                    this.typeNames = this.typeNames2;
+                } else {
+                    this.Types = this.Types1;
+                    this.typeNames = this.typeNames1;
+                }
+            },
+            callback(data) {
+                this.pagination.currentPage = data;
+                var query = $("#form").serialize();
+                var query = query + "&page="+data;
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.progressList = result.data;
+                            this.initTypes();
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            even: function (progressList) {
+                if (progressList == null) {
+                    return
+                }
+                var list = this.projectList;
+                return progressList.filter(function (progress) {
+                    for (var i in list) {
+                        if (progress.project_id == list[i].project_id) {
+                            progress.project_id = list[i].name;
+                            progress.data = JSON.parse(progress.data);
+                            return true
+                        }
+                    }
+                    return true
+                })
+            },
+            formatFloat: function (src,pos) {
+                return Math.round(src*Math.pow(10, pos))/Math.pow(10, pos); 
+            },
+            format2: function (n,m) {
+                return (m > 0) ? this.formatFloat(n / m * 100, 2) : n;
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                this.currentProjectID = this.currentPId;
+            })
+        },
+        filters:{
+            typeName: function (type) {
+                var ls = ["","点击开始按钮" ,"到达第一关" ,"到达第二关" ,"点击升级按钮" ,"到达第三关" ,"点击领取二级武器" ,"到达第四关" ,"点击合成图标" ,"到达第五关" ,"到达第8关" ,"到达第10关" ,"到达第13关" ,"攻击15关宠物" ,"点击宠物图标" ,"点击第一个宠物升级按钮" ,"到达第18关" ,"到达第20关" ,"点击黄金武器图标" ,"点击黄金武器激活按钮" ,"点击挂机按钮","点击合成界面返回按钮" ,"到达第六关" ,"进入到关卡选择地图" ,"到达第11关" ,"到达第21关" ,"到达第30关" ,"到达第40关" ,"到达第41关"];
+                var n = type.substr(4);
+                return ls[n];
+            },
+            formatDate: function (time) {
+                var time = new Date(time);
+                var y = time.getFullYear();//年
+                var m = time.getMonth() + 1;//月
+                var d = time.getDate();//日
+                //var h = time.getHours();//时
+                //var mm = time.getMinutes();//分
+                //var s = time.getSeconds();//秒
+                //return y + "-" + m + "-" + d + " " + h + ":" + mm + ":" + s
+                return y + "/" + m + "/" + d
+            }
+        }
+    });
+</script>

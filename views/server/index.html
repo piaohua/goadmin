@@ -1,0 +1,194 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+        <div class="form-group">
+            <label for="report">ProjectID:</label>
+            <select v-model="currentPId" class="form-control" id="report" name="report" @change="callback(1)">
+                <option v-for="project in projectList" v-if="project.project_id==currentPId" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+                <option value="12">report</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="appname">NAME:</label>
+            <input name="appname" size="20" type="text" class="form-control" id="appname" value="" placeholder="请输入名称">
+        </div>
+        <div class="form-group">
+            <label for="startTime">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="startTime" class="form-control pull-right" id="start_datepicker" type="text" value="<<<.StartTime>>>" placeholder="请输入开始日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+        <div class="form-group">
+            <label for="endTime">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="endTime" class="form-control pull-right" id="end_datepicker" type="text" value="<<<.EndTime>>>" placeholder="请输入结束日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="status">状态:</label>
+            <select v-model="currentStatus" class="form-control" id="status" name="status">
+                <option value="-1">全部</option>
+                <option v-for="(val, index) in statusList" v-bind:value="index" v-cloak>{{val}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+        <a style="float:right;margin-right:40px" class="btn btn-info" v-on:click='addedit(null)'>新增配置<i class="fa fa-plus"></i></a>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+
+        <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="activate to sort column descending">HOST</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">PORT</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">NAME</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">PATH</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">状态</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">更新时间</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">创建日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="(val,index) in List" v-cloak>
+                <tr role="row" class="odd">
+                    <td>{{ val.host }}</td>
+                    <td>{{ val.port }}</td>
+                    <td>{{ val.name }}</td>
+                    <td>{{ val.path }}</td>
+                    <td v-if="val.status==0"><a class="label label-default">停止</td>
+                    <td v-if="val.status==1"><a class="label label-success">运行</td>
+                    <td v-if="val.status==2"><a class="label label-info">开放</td>
+                    <td v-if="val.status==3"><a class="label label-warning">关闭</td>
+                    <td>{{ val.updated_at }}</td>
+                    <td>{{ val.created_at }}</td>
+                    <td>
+                        <a class="btn btn-xs btn-info"  v-on:click="addedit(index,1)">复制</a>
+                        <a class="btn btn-warning btn-xs text-fill"  type="button" v-on:click="addedit(index)">修改</a>
+                        <a class="btn btn-success btn-xs text-fill"  type="button" v-on:click="act(val.id, 1)">启动</a>
+                        <a class="btn btn-warning btn-xs text-fill"  type="button" v-on:click="act(val.id, 2)">停止</a>
+                        <a class="btn btn-info btn-xs text-fill"  type="button" v-on:click="act(val.id, 3)">开放</a>
+                        <a class="btn btn-danger btn-xs text-fill"  type="button" v-on:click="act(val.id, 4)">关闭</a>
+                        <a class="btn btn-info btn-xs text-fill"  type="button" v-on:click="act(val.id, 5)">创建</a>
+                        <a class="btn btn-primary btn-xs text-fill"  type="button" v-on:click="act(val.id, 6)">更新</a>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/error.html" .>>>
+
+<<<template "server/indexEdit.html" .>>>
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script type="text/javascript">
+    var vueServer = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'服务列表',
+            menuTitle:'游戏管理',
+            List: <<<.BaseData>>>,
+            statusList: ["停止","运行","开放访问","关闭访问"],
+            currentStatus: <<<.Status>>>,
+            pagination:<<<.Pagination>>>,
+            form_url: <<<urlfor "ServerController.Index">>>,
+            act_url: <<<urlfor "ServerController.BaseAct">>>,
+            projectList: <<<.Projects>>>,
+            currentPId: <<<.projectId>>>,
+            currentBase:{}
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        methods:{
+            callback(data) {
+                this.pagination.currentPage = data;
+                var query = $("#form").serialize();
+                query = query + "&page="+data;
+                //console.log("query ", query);
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.List = result.data.BaseData;
+                            this.pagination = result.data.Pagination;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            addedit:function(id,copy){
+                if(id!=null){
+                    var data = $.extend( {},this.List[id] );
+                    this.currentBase = data;
+                    if(copy){
+                        this.currentBase.id = 0;
+                    }
+                }else{
+                    this.currentBase = {};
+                }
+                $('#modal-editPage').modal('show')
+            },
+            act:function(id,status){
+                var str = '';
+                if (status == 1) {
+                    str = '确定要启动服务?';
+                } else if (status == 2) {
+                    str = '确定要停止服务?';
+                } else if (status == 3) {
+                    str = '确定要开放访问?';
+                } else if (status == 4) {
+                    str = '确定要关闭访问?';
+                } else if (status == 5) {
+                    str = '确定要创建服务?';
+                } else if (status == 6) {
+                    str = '确定要更新服务?';
+                }
+                ajaxDev(this.act_url, {id:id, status:status}, str);
+            },
+            submitForm:function(){
+                var query = $("#form_edit").serialize();
+                var url = $("#form_edit").attr("action");
+                ajaxDev(url,query,'');
+            }
+        },
+        filters:{
+        }
+    });
+</script>

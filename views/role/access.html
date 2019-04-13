@@ -1,0 +1,49 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-body table-responsive no-padding">
+    <form action="<<<urlfor "RoleController.SetAccess">>>" id="form_post" method="post">
+        <input v-model="roleId" type="hidden" name="role_id">
+        <div v-for="menu in moduleList" class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ menu.Title }}</h3>
+            </div>
+            <div class="panel-body">
+                <div v-for="child in menu.Children" class="col-md-2">
+                    <div class="checkbox">
+                        <label class="text-ellipsis" v-bind:title="child.Title">
+                            <input type="checkbox" v-bind:value="child.ModuleId" name="item" v-bind:checked="accessList[child.ModuleId] ? true:false ">{{ child.Title}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button v-on:click="submitForm" class="btn btn-primary" type="button">确认更新角色权限</button>
+    </form>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueRoleAccess = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'角色权限',
+            menuTitle:'角色管理',
+            roleId:<<<.RoleId>>>,
+            moduleList: <<<.ModuleData>>>,
+            accessList: <<<.AccessData>>>,
+            currentRole:{}
+        },
+        methods:{
+            submitForm:function(){
+                var query = $("#form_post").serialize();
+                var url = $("#form_post").attr("action");
+                //ajaxDev(url,query,'');
+                ajaxDev(url,query,'',false,true);
+            }
+        }
+    });
+</script>
+</body>
+</html>

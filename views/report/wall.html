@@ -1,0 +1,241 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+
+        <div class="form-group">
+            <label for="project_id">ProjectID:</label>
+            <select v-model="currentProjectID" class="form-control" id="project_id" name="project_id" disabled>
+                <option value="0">全部</option>
+                <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="appid">APPID:</label>
+            <select v-model="currentAppid" class="form-control" id="appid" name="appid" @change="selectVal">
+                <option value="">全部</option>
+                <option v-for="(val, index) in valueList" v-bind:value="keyList[index]" v-cloak>{{val}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="apptype">数据类型:</label>
+            <select v-model="currentType" class="form-control" id="apptype" name="apptype" @change="selectVal">
+                <option value="-2">汇总</option>
+                <option value="-1">全部</option>
+                <option v-for="(val, index) in typeList" v-bind:value="index" v-cloak>{{val}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="limit">显示数量:</label>
+            <select v-model="currentLimit" class="form-control" id="limit" name="limit" @change="selectVal">
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="dateat">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="dateat" class="form-control pull-right" id="datepicker" type="text" value="<<<.Dateat>>>" placeholder="请输入日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+         <!-- 导出excel -->
+         <button type="button" class="btn btn-info" @click="export2Excel">导出</button>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+
+        <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="activate to sort column descending">日期</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">项目</th>
+                <th v-if="currentType != -2" class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">appid</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">类型</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击次数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">登录人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">点击次数</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="val in even(startList)" v-cloak>
+                <tr role="row" class="odd">
+                    <td>{{ val.today }}</td>
+                    <td>{{ val.project_id }}</td>
+                    <td v-if="currentType != -2">{{ val.appid }}</td>
+                    <td>{{ val.type }}</td>
+                    <td>{{ val.regman }}</td>
+                    <td>{{ val.rnum1 }}</td>
+                    <td>{{ val.rtime1 }}</td>
+                    <td>{{ val.logman }}</td>
+                    <td>{{ val.lnum1 }}</td>
+                    <td>{{ val.ltime1 }}</td>
+                </tr>
+            </template>
+        </tbody>
+
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script type="text/javascript" src="https://unpkg.com/xlsx/dist/xlsx.full.min.js">
+    import XLSX from 'xlsx'
+</script>
+<script type="text/javascript" src="https://unpkg.com/blob.js@1.0.1/Blob.js"></script>
+<script type="text/javascript" src="https://unpkg.com/file-saver@1.3.3/FileSaver.js">
+    import FileSaver from 'file-saver'
+</script>
+
+<script type="text/javascript">
+    var vueReportWall = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'流量墙',
+            menuTitle:'统计管理',
+            typeList: ["领金币点击", "领金币成功", "抽屉点击", "浮窗点击", "猜你喜欢"],
+            keyList: ["wx0218344b87dadd30","wx1c3f86df57bb7abf","wx593c3c05193d299f","wxd16915542d3df546","wxe733827063f41444","wxf188fab12df15673","wx99ef5bd0791407a1","wx7a7d99f563ac3ee5","wxcc7502dfc119f9f4","wxb74cf216ae3e7812","wxb52b11c4dd14b6fc","wx7d2e1dd8fd7ea905","wx6960f4bfddda6abb","wx263ee0e5f196cb90","wxe23be68c8d90dc56","wxb74cf216ae3e7812_11","wxb74cf216ae3e7812_12","wxb74cf216ae3e7812_13","wx62cbdff21c74d69d" ,"wx793934bc4735d7b6" ,"wxc6b257b8f7c4780a" ,"wxc6b257b8f7c4780a_11"
+                ,"wxc6b257b8f7c4780a_12" ,"wxc6b257b8f7c4780a_11" ,"wxc6b257b8f7c4780a_12" ,"wxb74cf216ae3e7812_11" ,"wxb74cf216ae3e7812_12" ,"wxb74cf216ae3e7812_13","wx71743e2c3394dc9e" ,"wx4806f332084cae85" ,"wxf7bb25ccb6726778","wx0b63b7722494d1b6_1" ,"wx0b63b7722494d1b6_2" ,"wx0b63b7722494d1b6_3", "wx680267287cf0b2e6", "wx0b63b7722494d1b6","wx0b63b7722494d1b6_4" ,"wx0b63b7722494d1b6_5","wx01551a6a16bee726" ,"wx9631b6c61ebbea60"
+                ,"wx0b63b7722494d1b6_7", "wxc8cae7cfbe9ac7fb", "wx0b63b7722494d1b6_8"],
+            valueList: ["鲲神变","我要养条狗","三消王者","糖心炮弹","全民切西瓜","搞怪农场","一起切水果","彩虹俄罗斯方块","俄罗斯方块1010","任你玩游戏","天天斗地主","疯狂消星星","悟空大战飞机","枪手本色","搭桥高手","二跳疯狂消星星","二跳欢乐捕鲲","二跳王者猜词","水果大师OL" ,"一起切蔬菜" ,"水果游戏中心" ,"悟空大战飞机" ,"四川麻将" ,"水果游戏二跳悟空大战飞机" ,"水果游戏二跳四川麻将" ,"任你玩二跳疯狂消星星" ,"任你玩二跳欢乐捕鲲" ,"任你玩二跳王者猜词","欢乐捕鲲" ,"途游捕鱼"
+                ,"欢乐泡泡龙","欢乐打豆豆" ,"看我消你" ,"海上保卫战", "球球快躲开", "水果趣味休闲","完美消星星" ,"吃鸡碰碰车","丛林大乱斗" ,"皇上吉祥2" ,"瘟疫大作战","城市首富","站桩英雄"],
+            form_url: <<<urlfor "ReportController.Wall">>>,
+            projectList: <<<.Projects>>>,
+            currentProjectID: <<<.ProjectID>>>,
+            currentPId: <<<.projectId>>>,
+            currentType: -1,
+            currentLimit: 20,
+            currentAppid: "",
+            startList: <<<.WallData>>>,
+            pagination:<<<.Pagination>>>
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        methods:{
+            export2Excel () {
+                /* generate workbook object from table */
+                var wb = XLSX.utils.table_to_book(document.querySelector('#example2'))
+                /* get binary string as output */
+                var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+                try {
+                    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), this.pageTitle + '.xlsx')
+                } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+                return wbout
+            },
+            selectVal(ele) {
+                //console.log("ele ", ele.target.value);
+                var query = $("#form").serialize();
+                var query = query + "&page="+this.pagination.currentPage;
+                //var query = query + "&apptype="+ele.target.value;
+                //console.log("query ", query);
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.startList = result.data.WallData;
+                            this.pagination = result.data.Pagination;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            callback(data) {
+                this.pagination.currentPage = data;
+                var query = $("#form").serialize();
+                var query = query + "&page="+data;
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.startList = result.data.WallData;
+                            this.pagination = result.data.Pagination;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            even: function (startList) {
+                if (startList == null) {
+                    return
+                }
+                var list = this.projectList;
+                //类型:0:流量墙点击,1:领取奖励,2:抽屉点击,3:浮窗点击,4:猜你喜欢
+                var ts = this.typeList;
+                var ks = this.keyList;
+                var vs = this.valueList;
+                return startList.filter(function (start) {
+                    for (var i in list) {
+                        if (start.project_id == list[i].project_id) {
+                            start.project_id = list[i].name
+                            if (start.type <= 4) {
+                                start.type = ts[start.type];
+                            }
+                            for (var j in ks) {
+                                if (start.appid == ks[j]) {
+                                    start.appid = vs[j];
+                                    break
+                                }
+                            }
+                            return true
+                        }
+                    }
+                    return true
+                })
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                this.currentProjectID = this.currentPId;
+            })
+        },
+        filters:{
+        }
+    });
+</script>

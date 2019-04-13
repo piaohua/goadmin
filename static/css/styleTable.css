@@ -1,0 +1,18 @@
+/*去掉默认排序图标*/
+table.dataTable thead .sorting:after {
+  /*opacity: 0.2;
+  content: "\e150";*/
+  opacity: 0;
+  content: "";
+  /* sort */
+}
+table.dataTable thead .sorting_asc:after {
+  /*content: "\e155";*/
+  content: "";
+  /* sort-by-attributes */
+}
+table.dataTable thead .sorting_desc:after {
+  /*content: "\e156";*/
+  content: "";
+  /* sort-by-attributes-alt */
+}

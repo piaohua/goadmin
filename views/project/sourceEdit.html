@@ -1,0 +1,37 @@
+<!-- ./wrapper -->
+<div id="modal-addPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">新增/编辑来源</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="form_add" action="<<<urlfor "ProjectController.SourceEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>来源名称</td>
+                                <td><input  v-model="currentSource.name" id="name" name="name" type="text" class="form-control" placeholder="Enter name"></td>
+                            </tr>
+                            <tr>
+                                <td>来源说明</td>
+                                <td><input v-model="currentSource.info" id="info" name="info" type="text" class="form-control" placeholder="Enter info"></td>
+                            </tr>
+                            <tr>
+                                <td>来源ID</td>
+                                <td><input v-model="currentSource.source_id" id="source_id" name="source_id" type="text" class="form-control" placeholder="输入来源ID"></td>
+                            </tr>
+                            <input v-model="currentSource.id" id="id" name="id" type="hidden">
+                            <input v-model="currentSource.project_id" id="project_id" name="project_id" type="hidden">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

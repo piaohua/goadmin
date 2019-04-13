@@ -1,0 +1,34 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家材料</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "IdleCraftingController.MaterialEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>材料ID</td>
+                                <td><input v-model='currentMaterial.materials_id' name="material_id" id="show_material_id" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>材料数量</td>
+                                <td><input v-model='currentMaterial.number' name="number" id="edit_number" type="text" class="form-control"></td>
+                            </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentMaterial.materials_id' type="hidden" name="material_id" value="" id="edit_material_id" />
+                    <input v-model='currentMaterial.userid' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

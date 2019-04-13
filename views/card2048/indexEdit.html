@@ -1,0 +1,83 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家数据</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "Card2048Controller.BaseEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>userid</td>
+                                <td><input v-model='currentBase.id' name="userid" id="show_userid" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>金币数量</td>
+                                <td><input v-model='currentBase.gold' name="gold" id="edit_gold" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>分数数量</td>
+                                <td><input v-model='currentBase.score' name="score" id="edit_score" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>炸弹数量</td>
+                                <td><input v-model='currentBase.bomb' name="bomb" id="edit_bomb" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>弃牌数量</td>
+                                <td><input v-model='currentBase.throw' name="throw" id="edit_throw" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>换牌数量</td>
+                                <td><input v-model='currentBase.refresh' name="refresh" id="edit_refresh" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>关卡</td>
+                                <td><input v-model='currentBase.gate' name="gate" id="edit_gate" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>解锁关卡</td>
+                                <td><input v-model='currentBase.unlock_gate' name="unlock_gate" id="edit_unlock_gate" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>新手引导</td>
+                                <td><input v-model='currentBase.guide_step' name="guide_step" id="edit_guide_step" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>领取状态日期</td>
+                                <td><input v-model='currentBase.prize' name="prize" id="edit_prize" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>在线日期</td>
+                                <td><input v-model='currentBase.playday' name="playday" id="edit_playday" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>在线时长(秒)</td>
+                                <td><input v-model='currentBase.playtime' name="playtime" id="edit_playtime" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>添加小程序状态</td>
+                                <td>
+                                    <select v-model="currentBase.add" id="edit_add" name="add" class="form-control">
+                                        <option value="true">已添加</option>
+                                        <option value="false">未添加</option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentBase.id' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

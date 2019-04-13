@@ -1,0 +1,173 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+        <input name="userid" size="20" type="hidden" class="form-control" id="userid" value="<<<.Userid>>>" placeholder="请输入userid">
+        <div class="form-group">
+            <label for="achid">成就ID:</label>
+            <input name="achid" size="20" type="text" class="form-control" id="achid" value="<<<.achid>>>" placeholder="请输入成就ID">
+        </div>
+        <div class="form-group">
+            <label for="startTime">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="startTime" class="form-control pull-right" id="datepicker" type="text" value="<<<.StartTime>>>" placeholder="请输入开始日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+        <div class="form-group">
+            <label for="endTime">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="endTime" class="form-control pull-right" id="datepicker" type="text" value="<<<.EndTime>>>" placeholder="请输入结束日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+
+        <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="activate to sort column descending">成就id</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">类型</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">状态</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">描述</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">条件</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">更新日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="(val,index) in even(achList)" v-cloak>
+                <tr role="row" class="odd">
+                    <td>{{ val.achid }}</td>
+                    <td>{{ val.type }}</td>
+                    <td>{{ val.status }}</td>
+                    <td>{{ val.describe }}</td>
+                    <td>{{ val.condition }}</td>
+                    <td>{{ val.updated_at }}</td>
+                    <td>
+                        <a class="btn btn-warning btn-xs text-fill"  type="button" v-on:click="addedit(index)">修改</a>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/error.html" .>>>
+
+<<<template "idlecrafting/viewAchiementEdit.html" .>>>
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script type="text/javascript">
+    var vueIcAchs = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'成就数据',
+            menuTitle:'游戏管理',
+            achList: <<<.IcAchs>>>,
+            achListInfo: <<<.IcAchsInfo>>>,
+            pagination:<<<.Pagination>>>,
+            form_url: <<<urlfor "IdleCraftingController.ViewAchs">>>,
+            currentAch:{}
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        methods:{
+            callback(data) {
+                this.pagination.currentPage = data;
+                var query = $("#form").serialize();
+                query = query + "&page="+data;
+                //console.log("query ", query);
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.achList = result.data.IcAchs;
+                            this.achListInfo = result.data.IcAchsInfo;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            even: function (achList) {
+                if (achList == null) {
+                    return
+                }
+                var ls = this.achListInfo;
+                return achList.filter(function (val) {
+                    if (val.describe!=null||val.condition){
+                        return true
+                    }
+                    for (var i in ls) {
+                        if (val.achid == ls[i].achid && val.type == ls[i].type) {
+                            val.describe = ls[i].describe;
+                            val.condition = ls[i].condition;
+                            break;
+                        }
+                    }
+                    return true
+                })
+            },
+            addedit:function( id ){
+                if( id!=null ){
+                    var data = $.extend( {},this.achList[id] );
+                    this.currentAch = data;
+                    $('#modal-editPage').modal('show')
+                }else{
+                    $('#modal-error').modal('show')
+                    setTimeout(function () {
+                        $('#modal-error').modal('hide');
+                    }, 3000);
+                }
+            },
+            submitForm:function(){
+                var query = $("#form_edit").serialize();
+                var url = $("#form_edit").attr("action");
+                ajaxDev(url,query,'');
+            }
+        },
+        filters:{
+            formatDate: function (time) {
+                var time = new Date(time * 1000);
+                var y = time.getFullYear();//年
+                var m = time.getMonth() + 1;//月
+                var d = time.getDate();//日
+                //var h = time.getHours();//时
+                //var mm = time.getMinutes();//分
+                //var s = time.getSeconds();//秒
+                //return y + "-" + m + "-" + d + " " + h + ":" + mm + ":" + s
+                return y + "/" + m + "/" + d
+            }
+        }
+    });
+</script>

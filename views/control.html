@@ -1,0 +1,165 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+</div>
+<!-- /.box-header -->
+
+<div class="box-body chat" id="chat-box">
+    <template v-for="val in msgList" v-cloak>
+        <!-- chat item -->
+        <div class="item">
+            <img src="/static/plugins/framework/img/user3.jpg" alt="user image" class="online">
+            <p class="message">
+            <a class="name">
+                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> {{ val.created_at }}</small>
+                {{ val.username }}
+            </a>
+            </p>
+            <div class="attachment">
+                <h4>{{ val.message }}</h4>
+
+                <pre v-show="val.content!=''" class="hierarchy bring-up"><code class="language-bash" data-lang="bash">{{ val.content }}</code></pre>
+
+            </div>
+            <!-- /.attachment -->
+        </div>
+        <!-- /.item -->
+    </template>
+</div>
+<!-- /.chat -->
+
+<div class="box-footer">
+    <form id="form_add" method="post" onSubmit="return false">
+        <div class="input-group">
+            <input class="form-control" id="message" name="message" placeholder="Type message..." v-on:keyup.enter="submitForm" autocomplete="off" autocapitalize="off" autocorrect="off" required="required">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-success" v-on:click="submitForm">Send</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<<<template "common/error.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueControlPanel = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'控制台',
+            menuTitle:'Control panel',
+            msgList: <<<.MsgData>>>,
+            form_url: <<<urlfor "AdminController.Send">>>,
+            sync_url: <<<urlfor "AdminController.Sync">>>
+        },
+        methods:{
+            submitForm:function(){
+                var query = $("#form_add").serialize();
+                //console.log("query: ", query);
+                //console.log("query: ", $("#message").val());
+                var message = $("#message").val();
+                if (message == '') {
+                    return
+                }
+                axios.post(this.form_url, query)
+                    .then(function (response) {
+                        var data = response.data;
+                        if (data.code == 200) {
+                            if (Array.isArray(data.data)) {
+                                data.data.forEach(function(v){
+                                    vueControlPanel.msgList.push(v);
+                                });
+                            } else if (data.data != null) {
+                                vueControlPanel.msgList.push(data.data);
+                            }
+                            document.getElementById("form_add").reset();
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            scrollToBottom: function () {
+                this.$nextTick(() => {
+                    var div = document.getElementById('chat-box');
+                    if (div != null) {
+                        div.scrollTop = div.scrollHeight;
+                    }
+                })
+            },
+            getElevatorList:function(){
+                var n = this.msgList.length;
+                var last = this.msgList[n - 1];
+                var query = "lastid="+last.id;
+                //console.log("getElevatorList last: ", query);
+                axios.post(this.sync_url, query)
+                    .then(function (response) {
+                        var data = response.data;
+                        if (data.code == 200) {
+                            if (Array.isArray(data.data)) {
+                                data.data.forEach(function(v){
+                                    vueControlPanel.msgList.push(v);
+                                });
+                            } else if (data.data != null) {
+                                vueControlPanel.msgList.push(data.data);
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            }
+        },
+        watch: {
+            "msgList": function() {
+                this.scrollToBottom();
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                this.getElevatorList();
+                setInterval(this.getElevatorList, 5000);
+            })
+        }
+    });
+</script>
+
+<!-- jQuery UI 1.11.4 -->
+<script src="/static/plugins/jQueryUI/jquery-ui.min.js"></script>
+<!-- style -->
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/plugins/jQueryUI/jquery-ui.css">
+
+<script>
+    $( function() {
+        var availableTags = [
+            "~/ctrl list",
+            "~/ctrl flush",
+            "~/ctrl nginx",
+            "~/ctrl nginx-restart",
+            "pm2 list",
+            "pm2 show banzi",
+            "pm2 show banzi2",
+            "pm2 show goadmin",
+            "pm2 show idlecrafting",
+            "pm2 show idlecrafting2",
+            "pm2 show qise",
+            "pm2 show qise2",
+            "pm2 show report",
+            "pm2 show report2",
+            "pm2 show smash2"
+        ];
+        $( "#message" ).autocomplete({
+            source: availableTags
+        });
+    } );
+</script>

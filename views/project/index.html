@@ -1,0 +1,67 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <div class="user-add text-right">
+        <a class="btn btn-info addedit" v-on:click="addedit(null)">新增项目<i class="fa fa-plus"></i></a>
+    </div>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+        <tr>
+            <th>项目ID</th>
+            <th>项目名称</th>
+            <th>项目API</th>
+            <th>项目路径</th>
+            <th>状 态</th>
+            <th>操作</th>
+        </tr>
+        <template v-for="(project,index) in projectList" v-cloak>
+            <tr v-bind:class="[project.status == '1'?'text-green':'text-muted']">
+                <td>{{ project.project_id }}</td>
+                <td>{{ project.name }}</td>
+                <td>{{ project.api }}</td>
+                <td>{{ project.path }}</td>
+                <td><a class="label" v-bind:class="[project.status == '1'?'label-success':'label-default']">{{ project.status == '1' ? '正常' :'禁用' }}</td>
+                <td>
+                    <a class="btn btn-xs btn-warning addedit"  v-on:click="addedit(index)">修改</a>
+                    <!--a class="viewFiles btn btn-xs btn-info text-fill" v-bind:href="'<<<urlfor "ProjectController.Files">>>?project_id='+project.project_id">文件<i class="fa fa-street-view"></i></a-->
+                </td>
+            </tr>
+        </template>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "project/indexEdit.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+
+<script>
+    var vueProject = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'项目列表',
+            menuTitle:'项目管理',
+            projectList: <<<.ProjectData>>>,
+            currentProject:{}
+        },
+        methods:{
+            addedit:function(pid){
+                if(pid!=null){
+                    this.currentProject = $.extend( {},this.projectList[pid]);
+                }else{
+                    this.currentProject = {status:1};
+                }
+                $('#modal-addPage').modal('show')
+            },
+            submitForm:function(){
+                var query = $("#form_add").serialize();
+                var url = $("#form_add").attr("action");
+                ajaxDev(url,query,'');
+            }
+        }
+    });
+</script>

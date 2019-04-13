@@ -1,0 +1,189 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+        <div class="form-group">
+            <label for="userid">Userid:</label>
+            <input name="userid" size="20" type="text" class="form-control" id="userid" value="<<<.Userid>>>" placeholder="请输入userid">
+        </div>
+        <div class="form-group">
+            <label for="gold">金币:</label>
+            <input name="gold" size="20" type="text" class="form-control" id="gold" value="<<<.Gold>>>" placeholder="请输入金币">
+        </div>
+        <div class="form-group">
+            <label for="gate">关卡:</label>
+            <input name="gate" size="20" type="text" class="form-control" id="gate" value="<<<.Gate>>>" placeholder="请输入关卡">
+        </div>
+        <div class="form-group">
+            <label for="startTime">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="startTime" class="form-control pull-right" id="start_datepicker" type="text" value="<<<.StartTime>>>" placeholder="请输入开始日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+        <div class="form-group">
+            <label for="endTime">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="endTime" class="form-control pull-right" id="end_datepicker" type="text" value="<<<.EndTime>>>" placeholder="请输入结束日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="source_id">渠道:</label>
+            <select v-model="currentSourceID" class="form-control" id="source_id" name="source_id">
+                <!--option value="0">全部</option-->
+                <option v-for="val in sourceList" v-bind:value="val.source_id" v-cloak>{{val.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+
+        <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="activate to sort column descending">Userid</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">金币</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">关卡</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">指引</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">版本</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">渠道</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">更新时间</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="(ic,index) in even(QsList)" v-cloak>
+                <tr role="row" class="odd">
+                    <td>{{ ic.id }}</td>
+                    <td>{{ ic.gold }}</td>
+                    <td>{{ ic.gate }}</td>
+                    <td>{{ ic.guide_step }}</td>
+                    <td>{{ ic.version == 1 ? '新版本' : '老版本' }}</td>
+                    <td>{{ ic.source_id }}</td>
+                    <td>{{ ic.updated_at }}</td>
+                    <td>{{ ic.created_at }}</td>
+                    <td>
+                        <a class="btn btn-warning btn-xs text-fill"  type="button" v-on:click="addedit(index)">修改</a>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/error.html" .>>>
+
+<<<template "qise/indexEdit.html" .>>>
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script type="text/javascript">
+    var vueQise = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'彩虹七巧板',
+            menuTitle:'游戏管理',
+            QsList: <<<.QsData>>>,
+            sourceList: <<<.Sources>>>,
+            currentSourceID: <<<.SourceID>>>,
+            pagination:<<<.Pagination>>>,
+            form_url: <<<urlfor "QiseController.Index">>>,
+            currentBase:{}
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        methods:{
+            even: function (List) {
+                if (List == null) {
+                    return
+                }
+                var list = this.sourceList;
+                return List.filter(function (val) {
+                    for (var i in list) {
+                        if (val.source_id == list[i].source_id) {
+                            val.source_id = list[i].name
+                            return true
+                        }
+                    }
+                    return true
+                })
+            },
+            callback(data) {
+                this.pagination.currentPage = data;
+                var query = $("#form").serialize();
+                query = query + "&page="+data;
+                //console.log("query ", query);
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.QsList = result.data.QsData;
+                            this.pagination = result.data.Pagination;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            addedit:function( id ){
+                if( id!=null ){
+                    var data = $.extend( {},this.QsList[id] );
+                    this.currentBase = data;
+                    $('#modal-editPage').modal('show')
+                }else{
+                    $('#modal-error').modal('show')
+                    setTimeout(function () {
+                        $('#modal-error').modal('hide');
+                    }, 3000);
+                }
+            },
+            submitForm:function(){
+                var query = $("#form_edit").serialize();
+                var url = $("#form_edit").attr("action");
+                ajaxDev(url,query,'');
+            }
+        },
+        filters:{
+            formatDate: function (time) {
+                var time = new Date(time * 1000);
+                var y = time.getFullYear();//年
+                var m = time.getMonth() + 1;//月
+                var d = time.getDate();//日
+                var h = time.getHours();//时
+                var mm = time.getMinutes();//分
+                var s = time.getSeconds();//秒
+                return y + "-" + m + "-" + d + " " + h + ":" + mm + ":" + s
+            }
+        }
+    });
+</script>

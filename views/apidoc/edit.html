@@ -1,0 +1,160 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header bg-info" style="padding-bottom: 0">
+    <div class="row" style="padding-bottom:5px;">
+        <div class="form-group col-sm-7">
+            <div class="col-sm-4">
+                <div clas="form-group">
+                    <input v-model="currentApidoc.name" class="form-control" type="text" name="title" id="title" placeholder="请输入接口标题……">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div clas="form-group">
+                    <input v-model="currentApidoc.url" class="form-control" type="text" name="url" id="url" placeholder="接口地址:/register" >
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div clas="form-group">
+                    <input v-model="currentApidoc.sort" class="form-control" type="number" name="sort" id="sort" placeholder="接口序号" >
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-5 pull-right">
+            <div class="col-sm-6 right">
+                <label class="radio-inline">
+                    <input v-model="currentApidoc.method" type="radio" id="method" name="method" class="flat-red" value="1" checked> GET
+                </label>
+                <label class="radio-inline">
+                    <input v-model="currentApidoc.method" type="radio" id="method" name="method" class="flat-red" value="2"> POST
+                </label>
+                <input v-model="currentApidoc.id" type="hidden" name="id" id="id">
+                <input v-model="currentApidoc.project_id" type="hidden" name="project_id" id="project_id">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-7">
+            <div class="col-sm-4">
+                <select v-model="currentApidoc.status" name="status" id="status" class="form-control select2">
+                    <option selected="selected" value="0">接口状态</option>
+                    <option value="3">正常</option>
+                    <option value="5">弃用</option>
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <select v-model="currentApidoc.type" name="type" id="type" class="form-control select2">
+                    <option selected="selected" value="0">接口类型</option>
+                    <option value="3">基础说明</option>
+                    <option value="4">接口说明</option>
+                    <option value="1">基础模板</option>
+                    <option value="2">接口模板</option>
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <select v-model="currentMod" name="mod" id="mod" class="form-control select2">
+                    <option selected="selected" value="0">模板选择</option>
+                    <option v-for="val in modList" v-bind:value="val.id" v-cloak>{{val.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group col-sm-5 pull-right">
+            <div class="col-sm-6 right">
+                <div class="btn-group ">
+                    <button v-on:click="goback" type="button" class="btn btn-default" id="goback"><i class="fa fa-reply">&nbsp;&nbsp;返回</i></button>
+                    <button v-on:click="submitForm" type="button" class="btn btn-primary" id="gosubmit"><i class="fa fa-save">&nbsp;&nbsp;保存</i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div clas="box-body">
+    <div id="test-editormd">
+        <textarea v-model="currentApidoc.detail" style="display:none;" name="detail" id="detail">
+        </textarea>
+    </div>
+</div>
+
+<<<template "common/error.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<link rel="stylesheet" href="/static/editor.md/css/editormd.min.css" />
+<script src="/static/editor.md/editormd.min.js"></script>
+<script src="/static/editor.md/lib/marked.min.js"></script>
+<script src="/static/editor.md/lib/prettify.min.js"></script>
+<script src="/static/editor.md/lib/raphael.min.js"></script>
+<script src="/static/editor.md/lib/underscore.min.js"></script>
+<script src="/static/editor.md/lib/sequence-diagram.min.js"></script>
+<script src="/static/editor.md/lib/flowchart.min.js"></script>
+<script src="/static/editor.md/lib/jquery.flowchart.min.js"></script>
+
+
+<script type="text/javascript">
+var testEditor;
+
+$(function() {
+    testEditor = editormd("test-editormd", {
+        width   : "90%",
+        height  : 640,
+        syncScrolling : "single",
+        path    : "/static/editor.md/lib/"
+        //onchange : function() {
+        //    //$("#output").html("onchange : this.id =>" + this.id + ", markdown =>" + this.getValue());
+        //    //console.log("onchange =>", this, this.id, this.settings, this.state);
+        //},
+        //toolbarIcons : function() {
+        //    // Or return editormd.toolbarModes[name]; // full, simple, mini
+        //    // Using "||" set icons align right.
+        //    return ["undo", "redo", "|", 
+        //        "bold", "del", "italic", "quote", "|", 
+        //        "h1", "h2", "h3", "h4", "h5", "h6", "|", 
+        //        "list-ul", "list-ol", "hr", "|",
+        //        "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "|",
+        //        "goto-line", "watch", "preview", "fullscreen", "clear", "search", "|",
+        //        "help", "info"]
+        //},
+    });
+});
+
+    var vueProjectApiDocEdit = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'接口编辑',
+            menuTitle:'项目管理',
+            form_url: <<<urlfor "ProjectController.ApiDocEdit">>>,
+            currentApidoc: <<<.ApiDocData>>>, //{"method":2}
+            modList: <<<.ModList>>>,
+            currentMod: 0
+        },
+        methods:{
+            goback:function(){
+                window.history.back();
+            },
+            submitForm:function(){
+                var query = {};
+                query["title"]=$("#title").val();
+                query["url"]=$("#url").val();
+                query["sort"]=$("#sort").val();
+                query["method"]=$('input:radio[name="method"]:checked').val();
+                query["status"]=$("#status option:selected").val();
+                query["type"]=$("#type").find('option:selected').val();
+                //query["mod"]=$("#mod").find('option:selected').text();
+                query["detail"]=testEditor.getMarkdown();
+                query["id"]=$("#id").val();
+                query["project_id"]=$("#project_id").val();
+                console.log("query ", query);
+                //var query = $("#form_add").serialize();
+                //var url = $("#form_add").attr("action");
+                ajaxDev(this.form_url,query,'');
+                this.goback();
+            }
+        }
+    });
+
+    //Flat red color scheme for iCheck
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass   : 'iradio_flat-green'
+    })
+
+</script>

@@ -1,0 +1,49 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家数据</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "GunnerController.BaseEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>userid</td>
+                                <td><input v-model='currentBase.id' name="userid" id="show_userid" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>金币数量</td>
+                                <td><input v-model='currentBase.gold' name="gold" id="edit_gold" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>最高分数</td>
+                                <td><input v-model='currentBase.top_score' name="top_score" id="edit_top_score" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>连击道具数量</td>
+                                <td><input v-model='currentBase.atk_prop' name="atk_prop" id="edit_atk_prop" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>手雷道具数量</td>
+                                <td><input v-model='currentBase.boom_prop' name="boom_prop" id="edit_boom_prop" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>退出时间截</td>
+                                <td><input v-model='currentBase.out_time' name="out_time" id="edit_out_time" type="text" class="form-control"></td>
+                            </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentBase.id' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

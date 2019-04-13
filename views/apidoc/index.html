@@ -1,0 +1,97 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <div class="user-add text-right">
+        <a class="addApiDoc btn btn-xs btn-info text-fill" v-bind:href="'<<<urlfor "ProjectController.ApiDocView">>>'">新增接口<i class="fa fa-plus"></i></a>
+    </div>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+        <tr>
+            <th>序号</th>
+            <th>名称</th>
+            <th>地址</th>
+            <th>请求方式</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>修改时间</th>
+            <th>操作</th>
+        </tr>
+        <template v-for="(val,index) in apidocList" v-cloak>
+            <tr v-bind:class="[val.status == '3'?'text-green':'text-muted']">
+                <td>{{ val.sort }}</td>
+                <td>{{ val.name }}</td>
+                <td v-if="val.url != ''">{{ val.url }}</td>
+                <td v-else>无</td>
+                <td v-if="val.method == 1">GET</td>
+                <td v-else-if="val.method == 2">POST</td>
+                <td v-else>无</td>
+                <td><a class="label" v-bind:class="[val.status == '3'?'label-success':'label-default']">{{ val.status == '3' ? '正常' :'禁用' }}</td>
+                <td>{{ val.created_at }}</td>
+                <td>{{ val.updated_at }}</td>
+                <td>
+                    <a class="editApiDoc btn btn-xs btn-info text-fill" v-bind:href="'<<<urlfor "ApiDocController.Show">>>?id='+val.id">查看<i class="fa fa-street-view"></i></a>
+                    <a class="editApiDoc btn btn-xs btn-warning text-fill" v-bind:href="'<<<urlfor "ProjectController.ApiDocView">>>?id='+val.id">编辑</a>
+                    <button class="btn btn-warning btn-xs" v-on:click="updateStatus(val.id,val.status == '3' ? 0 :3)">{{ val.status == '0' ? '解禁' :'禁用' }}</button>
+                </td>
+            </tr>
+        </template>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueProjectApiDocList = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'接口列表',
+            menuTitle:'项目管理',
+            pagination:<<<.Pagination>>>,
+            form_url: <<<urlfor "ProjectController.ApiDoc">>>,
+            status_url:<<<urlfor "ProjectController.ApiDocAudit">>>,
+            apidocList: <<<.ApiDocData>>>
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        methods:{
+            callback(data) {
+                this.pagination.currentPage = data;
+                //var query = $("#form").serialize();
+                //query = query + "&page="+data;
+                var query = "page="+data;
+                //console.log("query ", query);
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.apidocList = result.data;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            updateStatus:function(id,status){
+                var str = status == 3 ? '解禁':'禁用';
+                ajaxDev(this.status_url, {id:id,status:status}, '确定要'+ str +'该用户?');
+            },
+        }
+    });
+</script>

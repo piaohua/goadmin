@@ -1,0 +1,138 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+
+        <div class="form-group">
+            <label for="project_id">ProjectID:</label>
+            <select v-model="currentProjectID" class="form-control" id="project_id" name="project_id" disabled>
+                <option value="0">全部</option>
+                <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="userid">userid:</label>
+            <input name="userid" size="20" type="text" class="form-control" id="userid" value="<<<.Userid>>>" placeholder="请输入玩家ID">
+        </div>
+        <div class="form-group">
+            <label for="datetime">Date:</label>
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="datetime" class="form-control pull-right" id="datepicker" type="text" value="<<<.Datetime>>>" placeholder="请输入日期">
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+         <!-- 导出excel -->
+         <button type="button" class="btn btn-info" @click="export2Excel">导出</button>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+
+        <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="activate to sort column descending">ID</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">userid</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">前进关卡数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">时间</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="val in List" v-cloak>
+                <tr role="row" class="odd">
+                    <td>{{ val.id }}</td>
+                    <td>{{ val.userid }}</td>
+                    <td>{{ val.number }}</td>
+                    <td>{{ val.created_at }}</td>
+                </tr>
+            </template>
+        </tbody>
+
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script type="text/javascript" src="https://unpkg.com/xlsx/dist/xlsx.full.min.js">
+    import XLSX from 'xlsx'
+</script>
+<script type="text/javascript" src="https://unpkg.com/blob.js@1.0.1/Blob.js"></script>
+<script type="text/javascript" src="https://unpkg.com/file-saver@1.3.3/FileSaver.js">
+    import FileSaver from 'file-saver'
+</script>
+
+<script type="text/javascript">
+    var vueLogLogin = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'前进关卡日志',
+            menuTitle:'日志管理',
+            form_url: <<<urlfor "LogController.GateGrow">>>,
+            projectList: <<<.Projects>>>,
+            currentProjectID: <<<.ProjectID>>>,
+            currentPId: <<<.projectId>>>,
+            List: <<<.LogData>>>,
+            pagination:<<<.Pagination>>>
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        methods:{
+            export2Excel () {
+                /* generate workbook object from table */
+                var wb = XLSX.utils.table_to_book(document.querySelector('#example2'))
+                /* get binary string as output */
+                var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+                try {
+                    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), this.pageTitle + '.xlsx')
+                } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+                return wbout
+            },
+            callback(data) {
+                this.pagination.currentPage = data;
+                var query = $("#form").serialize();
+                query = query + "&page="+data;
+                //console.log("query ", query);
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.List = result.data;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                this.currentProjectID = this.currentPId;
+            })
+        },
+        filters:{
+        }
+    });
+</script>

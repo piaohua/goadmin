@@ -1,0 +1,61 @@
+<<<template "common/contentHeader.html" .>>>
+
+<!--div class="box-header">
+    <div class="user-add text-right">
+        <a class="btn btn-info addedit" v-on:click="addedit(null)">新增项目<i class="fa fa-plus"></i></a>
+    </div>
+</div-->
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+        <tr>
+            <th>项目ID</th>
+            <th>项目名称</th>
+            <th>项目版本</th>
+            <th>状 态</th>
+            <th>操作</th>
+        </tr>
+        <template v-for="(sw,index) in switchList" v-cloak>
+            <tr v-bind:class="[sw.status == '1'?'text-green':'text-muted']">
+                <td>{{ sw.project_id }}</td>
+                <td>{{ sw.name }}</td>
+                <td>{{ sw.version }}</td>
+                <td><a class="label" v-bind:class="[sw.status == '1'?'label-success':'label-default']">{{ sw.status == '1' ? '正常' :'禁用' }}</td>
+                <td><a class="btn btn-xs btn-warning addedit"  v-on:click="addedit(index)">修改</a></td>
+            </tr>
+        </template>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "project/switchEdit.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueProjectSwitch = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'分享开关',
+            menuTitle:'项目管理',
+            switchList: <<<.SwitchData>>>,
+            currentSwitch:{}
+        },
+        methods:{
+            addedit:function(pid){
+                if(pid!=null){
+                    this.currentSwitch = $.extend( {},this.switchList[pid]);
+                }else{
+                    this.currentSwitch = {status:1};
+                }
+                $('#modal-addPage').modal('show')
+            },
+            submitForm:function(){
+                var query = $("#form_add").serialize();
+                var url = $("#form_add").attr("action");
+                ajaxDev(url,query,'');
+            }
+        }
+    });
+</script>
