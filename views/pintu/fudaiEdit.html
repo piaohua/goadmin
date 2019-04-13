@@ -1,0 +1,59 @@
+<!-- ./wrapper -->
+<div id="modal-fudaieditPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家福袋数据</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_fudai_edit" action="<<<urlfor "PintuController.FuDaiEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>userid</td>
+                                <td><input v-model='currentFudaiBase.userid' name="userid" id="show_userid" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>最后日期</td>
+                                <td><input v-model='currentFudaiBase.today' name="today" id="edit_today" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>第几天</td>
+                                <td><input v-model='currentFudaiBase.days' name="days" id="edit_days" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>通关数量</td>
+                                <td><input v-model='currentFudaiBase.level' name="level" id="edit_level" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>当前进行第几个福袋</td>
+                                <td><input v-model='currentFudaiBase.bag' name="bag" id="edit_bag" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>当天领取第几个福袋</td>
+                                <td><input v-model='currentFudaiBase.bag_num' name="bag_num" id="edit_bag_num" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>福袋获得总数量</td>
+                                <td><input v-model='currentFudaiBase.number' name="number" id="edit_number" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>福券获得总数量</td>
+                                <td><input v-model='currentFudaiBase.ticket' name="ticket" id="edit_ticket" type="text" class="form-control"></td>
+                            </tr>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentFudaiBase.id' type="hidden" name="id" value="" id="edit_id" />
+                    <input v-model='currentFudaiBase.userid' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitFudaiForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

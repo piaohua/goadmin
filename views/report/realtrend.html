@@ -1,0 +1,214 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+
+        <div class="form-group">
+            <label for="project_id">ProjectID:</label>
+            <select v-model="currentProjectID" class="form-control" id="project_id" name="project_id" disabled>
+                <option value="0">全部</option>
+                <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="dateat">Date:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="dateat" class="form-control pull-right" id="datepicker" type="text" value="<<<.Dateat>>>" placeholder="请输入日期" readonly>
+            </div>
+            <!-- /.input group -->
+            <div class="input-group">
+                <input name="timeat" id="timeat" type="text" value="<<<.Timeat>>>" class="form-control timepicker" readonly>
+
+                <div class="input-group-addon">
+                    <i class="fa fa-clock-o"></i>
+                </div>
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="granularity">时间粒度:</label>
+            <select v-model="currentGranularity" class="form-control" id="granularity" name="granularity" @change="selectVal">
+                <option v-for="val in typeList" v-bind:value="val" v-cloak>{{val}}分钟</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-header with-border">
+    <i class="fa fa-bar-chart-o"></i>
+
+    <h3 class="box-title">{{pageTitle}}</h3>
+
+    <!--div class="box-tools pull-right">
+        Real time
+        <div class="btn-group" id="realtime" data-toggle="btn-toggle">
+            <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+            <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+        </div>
+    </div-->
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <div class="charts">
+        <div id="myChart" :style="{width: '90%', height: '500px'}"></div>
+    </div>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/contentFooter.html" .>>>
+
+<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts-en.common.js">
+    // 引入echarts
+    import echarts from 'echarts'
+</script>
+
+<script>
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "h+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds(), //秒 
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+            "S": this.getMilliseconds() //毫秒 
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    Vue.prototype.$echarts = echarts
+    var vueReportRealTrend = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'实时趋势',
+            menuTitle:'统计管理',
+            projectList: <<<.Projects>>>,
+            currentProjectID: <<<.ProjectID>>>,
+            currentGranularity: <<<.Granularity>>>,
+            currentPId: <<<.projectId>>>,
+            List: <<<.OnlineData>>>,
+            typeList: [1,5,10,20,30],
+            form_url: <<<urlfor "ReportController.Realtrend">>>,
+        },
+        methods:{
+            callback(data) {
+                var query = $("#form").serialize();
+                var dateat = $("#datepicker").val();
+                var timeat = $("#timeat").val();
+                //var granularity = $("#granularity").val();
+                var time = new Date(dateat + " " + timeat);
+                var timestamp = Math.round(time.getTime()/1000);
+                if (!isNaN(timestamp)){
+                    var query = query + "&timestamp=" + timestamp;
+                }
+                var query = query + "&granularity="+this.currentGranularity;
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.List = result.data;
+                            this.genData();
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            selectVal(ele) {
+                console.log("ele ", ele.target.value);
+                this.currentGranularity = ele.target.value;
+                this.callback(ele.target.value);
+            },
+            genData() {
+                var data = [];
+                var list = this.List; 
+                for (var i in list) {
+                    var time = new Date(list[i].timestamp * 1000);
+                    var t =  time.Format("yyyy-MM-dd hh:mm:ss");
+                    var val = {
+                        name: t,
+                        value: [
+                            t,
+                            list[i].dau
+                        ]
+                    };
+                    data.push(val);
+                }
+                //console.log("data ", data);
+                this.dynamicLine(data);
+            },
+            dynamicLine(data) {
+                // 基于准备好的dom，初始化echarts实例
+                let myChart = this.$echarts.init(document.getElementById('myChart'))
+                // 绘制图表
+                myChart.setOption({
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function (params) {
+                            params = params[0];
+                            return params.value[0] + ' : ' + params.value[1];
+                        },
+                        axisPointer: {
+                            animation: false
+                        }
+                    },
+                    xAxis: {
+                        type: 'time',
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        boundaryGap: [0, '100%'],
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    series: [{
+                        name: '在玩数据',
+                        type: 'line',
+                        showSymbol: false,
+                        hoverAnimation: false,
+                        data: data
+                    }]
+                });
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                this.currentProjectID = this.currentPId;
+            })
+            this.genData();
+        },
+        filters:{
+        }
+    });
+</script>

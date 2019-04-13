@@ -1,0 +1,252 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+
+        <div class="form-group">
+            <label for="project_id">ProjectID:</label>
+            <select v-model="currentProjectID" class="form-control" id="project_id" name="project_id" disabled>
+                <option value="0">全部</option>
+                <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="dateat">Date:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="dateat" class="form-control pull-right" id="datepicker" type="text" value="<<<.Dateat>>>" placeholder="请输入日期" readonly>
+            </div>
+            <!-- /.input group -->
+            <div class="input-group">
+                <input name="timeat" id="timeat" type="text" value="<<<.Timeat>>>" class="form-control timepicker" readonly>
+
+                <div class="input-group-addon">
+                    <i class="fa fa-clock-o"></i>
+                </div>
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-header with-border">
+    <i class="fa fa-bar-chart-o"></i>
+
+    <h3 class="box-title">{{pageTitle}}</h3>
+
+    <!--div class="box-tools pull-right">
+        Real time
+        <div class="btn-group" id="realtime" data-toggle="btn-toggle">
+            <button type="button" class="btn btn-default btn-xs active" data-toggle="on">On</button>
+            <button type="button" class="btn btn-default btn-xs" data-toggle="off">Off</button>
+        </div>
+    </div-->
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <template>
+        <ve-line :data="chartData" :settings="chartSettings"></ve-line>
+    </template>
+</div>
+<!-- /.box-body -->
+
+<div class="box-body table-responsive no-padding">
+    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+
+        <thead>
+            <tr role="row">
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">项目</th>
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="activate to sort column descending">今日</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">DAU人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">登录人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">昨日</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">DAU人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">登录人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">上周</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">DAU人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">登录人数</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="val in List1" v-cloak>
+                <tr role="row" class="odd">
+                    <td>{{ val.project_id }}</td>
+                    <td>{{ val.timestamp | formatDate }}</td>
+                    <td>{{ val.regist }}</td>
+                    <td>{{ val.dau }}</td>
+                    <td>{{ val.login }}</td>
+                    <td>{{ val.ytimestamp | formatDate }}</td>
+                    <td>{{ val.yregist }}</td>
+                    <td>{{ val.ydau }}</td>
+                    <td>{{ val.ylogin }}</td>
+                    <td>{{ val.ltimestamp | formatDate }}</td>
+                    <td>{{ val.lregist }}</td>
+                    <td>{{ val.ldau }}</td>
+                    <td>{{ val.llogin }}</td>
+                </tr>
+            </template>
+        </tbody>
+
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/contentFooter.html" .>>>
+
+<script src="//cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="//cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/v-charts/lib/index.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/v-charts/lib/style.min.css">
+
+<script>
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "h+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds(), //秒 
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+            "S": this.getMilliseconds() //毫秒 
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+    var vueReportRealPlay = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        methods:{
+            formatDate2: function (time) {
+                var time = new Date(time * 1000);
+                var h = time.getHours();//时
+                var mm = time.getMinutes();//分
+                return h + ":" + mm
+            },
+            list2rows: function () {
+                var rows = new Array();
+                for (var i in this.List1) {
+                    for (var j in this.projectList){
+                        if (this.List1[i].project_id == this.projectList[j].project_id) {
+                            this.List1[i].project_id = this.projectList[j].name;
+                            break;
+                        }
+                    }
+                    if (this.List2!=null&&this.List2[i]!=null){
+                        this.List1[i].ytimestamp = this.List2[i].timestamp;
+                        this.List1[i].yregist = this.List2[i].regist;
+                        this.List1[i].ydau = this.List2[i].dau;
+                        this.List1[i].ylogin = this.List2[i].login;
+                    }
+                    if (this.List3!=null&&this.List3[i]!=null){
+                        this.List1[i].ltimestamp = this.List3[i].timestamp;
+                        this.List1[i].lregist = this.List3[i].regist;
+                        this.List1[i].ldau = this.List3[i].dau;
+                        this.List1[i].llogin = this.List3[i].login;
+                    }
+                    var row = { '时间': this.formatDate2(this.List1[i].timestamp),
+                        '今日在玩': this.List1[i].dau,
+                        '昨日在玩': this.List1[i].ydau,
+                        '上周在玩': this.List1[i].ldau };
+                    rows.push(row);
+                }
+                rows.reverse();
+                return rows
+            },
+            callback(data) {
+                var query = $("#form").serialize();
+                var dateat = $("#datepicker").val();
+                var timeat = $("#timeat").val();
+                var time = new Date(dateat + " " + timeat);
+                var timestamp = Math.round(time.getTime()/1000);
+                if (!isNaN(timestamp)){
+                    var query = query + "&timestamp=" + timestamp;
+                }
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.List1 = result.data.TodayPlay;
+                            this.List2 = result.data.YesterdayPlay;
+                            this.List3 = result.data.LastweekPlay;
+                            this.chartData.rows = this.list2rows();
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+        },
+        data () {
+            this.pageTitle = '实时在玩'
+            this.menuTitle = '统计管理'
+            this.projectList = <<<.Projects>>>
+            this.currentProjectID = <<<.ProjectID>>>
+            this.currentPId = <<<.projectId>>>
+            this.List1 = <<<.TodayPlay>>>
+            this.List2 = <<<.YesterdayPlay>>>
+            this.List3 = <<<.LastweekPlay>>>
+            this.form_url = <<<urlfor "ReportController.Realplay">>>
+            this.currentProjectID = this.currentPId
+            this.chartSettings = {
+                metrics: ['今日在玩', '昨日在玩', '上周在玩'],
+                dimension: ['时间']
+            }
+            //this.extend = {
+            //    series: {
+            //        label: {
+            //            normal: {
+            //                show: true
+            //            }
+            //        }
+            //    }
+            //}
+            return {
+                List1: this.List1,
+                List2: this.List2,
+                List3: this.List3,
+                chartData: {
+                    columns: ['时间', '今日在玩', '昨日在玩', '上周在玩'],
+                    rows: this.list2rows()
+                }
+            }
+        },
+        computed:{
+        },
+        filters:{
+            formatDate: function (time) {
+                var time = new Date(time * 1000);
+                return time.Format("yyyy-MM-dd hh:mm:ss")
+                //var y = time.getFullYear();//年
+                //var m = time.getMonth() + 1;//月
+                //var d = time.getDate();//日
+                //var h = time.getHours();//时
+                //var mm = time.getMinutes();//分
+                //var s = time.getSeconds();//秒
+                //return y + "-" + m + "-" + d + " " + h + ":" + mm + ":" + s
+            }
+        }
+    });
+</script>

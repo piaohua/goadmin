@@ -1,0 +1,42 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家宠物</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "IdleCraftingController.PetEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>宠物ID</td>
+                                <td><input v-model='currentPet.pet_id' name="pet_id" id="show_pet_id" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>宠物等级</td>
+                                <td><input v-model='currentPet.level' name="level" id="edit_level" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>宠物星数</td>
+                                <td><input v-model='currentPet.star' name="star" id="edit_star" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>宠物进度</td>
+                                <td><input v-model='currentPet.extra' name="extra" id="edit_extra" type="text" class="form-control"></td>
+                            </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentPet.pet_id' type="hidden" name="pet_id" value="" id="edit_pet_id" />
+                    <input v-model='currentPet.userid' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

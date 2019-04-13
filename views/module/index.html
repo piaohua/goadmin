@@ -1,0 +1,77 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <div class="user-add text-right">
+        <a class="btn btn-info addedit" v-on:click="addedit(-1,-1)">新增模块<i class="fa fa-plus"></i></a>
+    </div>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+        <tr>
+            <th>标题</th>
+            <th>模块名称</th>
+            <th>方法名称</th>
+            <th>类型</th>
+            <th>显示</th>
+            <th>状 态</th>
+            <th>操作</th>
+        </tr>
+        <template v-for="(module, pid) in moduleList" v-cloak>
+            <tr class="text-yellow">
+                <td>{{ module.Title }}</td>
+                <td>{{ module.ModuleName }}</td>
+                <td>{{ module.MethodName }}</td>
+                <td><a class="label" v-bind:class="[module.Type == '1'?'label-success':'label-default']">{{ module.Type == '1' ? '模块' :'方法' }}</td>
+                <td><a class="label" v-bind:class="[module.Show == '1'?'label-success':'label-default']">{{ module.Show == '1' ? '显示' :'隐藏' }}</td>
+                <td><a class="label" v-bind:class="[module.Status == '1'?'label-success':'label-default']">{{ module.Status == '1' ? '正常' :'禁用' }}</td>
+                <td><a class="btn btn-xs btn-warning addedit"  v-on:click="addedit(pid,-1)">修改</a></td>
+            </tr>
+            <tr v-for="(child, mid) in module.Children">
+                <td>{{ child.Title }}</td>
+                <td>{{ child.ModuleName }}</td>
+                <td>{{ child.MethodName }}</td>
+                <td><a class="label" v-bind:class="[child.Type == '1'?'label-success':'label-default']">{{ child.Type == '1' ? '模块' :'方法' }}</td>
+                <td><a class="label" v-bind:class="[child.Show == '1'?'label-success':'label-default']">{{ child.Show == '1' ? '显示' :'隐藏' }}</td>
+                <td><a class="label" v-bind:class="[child.Status == '1'?'label-success':'label-default']">{{ child.Status == '1' ? '正常' :'禁用' }}</td>
+                <td><a class="btn btn-xs btn-warning addedit" v-on:click="addedit(pid,mid)">修改</a></td>
+            </tr>
+        </template>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "module/indexEdit.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueModule = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'功能列表',
+            menuTitle:'模块管理',
+            form_url: <<<urlfor "ModuleController.Index">>>,
+            moduleList: <<<.ModuleData>>>,
+            currentModule:{}
+        },
+        methods:{
+            addedit:function(pid,mid){
+                if(pid>=0 && mid>=0){
+                    this.currentModule = $.extend( {},this.moduleList[pid]['Children'][mid]);//使用新对象，以防界面数据被更新
+                }else if(pid>=0){
+                    this.currentModule = $.extend( {},this.moduleList[pid]);
+                }else{
+                    this.currentModule = {parent_id:0,type:1,status:1};
+                }
+                $('#modal-addPage').modal('show')
+            },
+            submitForm:function(){
+                var query = $("#form_add").serialize();
+                var url = $("#form_add").attr("action");
+                ajaxDev(url,query,'');
+            }
+        }
+    });
+</script>

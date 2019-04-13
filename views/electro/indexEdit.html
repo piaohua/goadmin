@@ -1,0 +1,63 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家数据</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "ElectroController.BaseEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>userid</td>
+                                <td><input v-model='currentBase.id' name="userid" id="show_userid" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>金币数量</td>
+                                <td><input v-model='currentBase.gold' name="gold" id="edit_gold" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>关卡</td>
+                                <td><input v-model='currentBase.gate' name="gate" id="edit_gate" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>解锁关卡</td>
+                                <td><input v-model='currentBase.unlock_gate' name="unlock_gate" id="edit_unlock_gate" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>新手引导</td>
+                                <td><input v-model='currentBase.guide_step' name="guide_step" id="edit_guide_step" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>签到数据</td>
+                                <td><input v-model='currentBase.signin' name="signin" id="edit_signin" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>签到时间</td>
+                                <td><input v-model='currentBase.sign_time' name="sign_time" id="edit_sign_time" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>添加小程序状态</td>
+                                <td>
+                                    <select v-model="currentBase.add" id="edit_add" name="add" class="form-control">
+                                        <option value="true">已添加</option>
+                                        <option value="false">未添加</option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentBase.id' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

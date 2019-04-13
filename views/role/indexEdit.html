@@ -1,0 +1,59 @@
+<!-- ./wrapper -->
+<div id="modal" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div id="modal-Page" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">创建/更新角色信息</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_add" action="<<<urlfor "RoleController.Save">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>角色名称</td>
+                                <td><input v-model='currentRole.RoleName' name="role_name" id="edit_rolename" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>角色描述</td>
+                                <td><input v-model='currentRole.Description' name="description" id="edit_description" type="text" class="form-control"></td>
+                            </tr>
+
+                            <tr>
+                                <td>项目选择</td>
+                                <td>
+                                    <select name="project_ids" id="project_ids" class="form-control select2" multiple="multiple" data-placeholder="选择项目" style="width: 100%;">
+                                        <option v-for="val in projectList" v-bind:value="val.project_id" v-cloak>{{val.name}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            
+                            <td>状态</td>
+                            <td>
+                                <label class="radio-inline">
+                                    <input v-model='currentRole.Status' class="text-fill" name="status" type="radio" id="edit_status_1" value="1"> 正常
+                                </label>
+                                <label class="radio-inline">
+                                    <input v-model='currentRole.Status' class="text-fill" name="status" type="radio" id="edit_status_0" value="0"> 冻结
+                                </label>
+                            </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentRole.RoleId' type="hidden" name="role_id" value="" id="edit_role_id" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" v-on:click='submitForm'>确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

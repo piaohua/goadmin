@@ -1,0 +1,87 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">添加/修改服务</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "ServerController.BaseEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>ProjectID</td>
+                                <td><input v-model='currentPId' name="name" id="name" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>NAME</td>
+                                <td><input v-model='currentBase.name' name="name" id="name" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>HOST</td>
+                                <td><input v-model='currentBase.host' name="host" id="host" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>PORT</td>
+                                <td><input v-model='currentBase.port' name="port" id="port" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>PATH</td>
+                                <td><input v-model='currentBase.path' name="path" id="path" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>jwt secret</td>
+                                <td><input v-model='currentBase.jwt_secret' name="jwt_secret" id="jwt_secret" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>header token</td>
+                                <td><input v-model='currentBase.token' name="token" id="token" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>weixin appid</td>
+                                <td><input v-model='currentBase.appid' name="appid" id="appid" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>weixin app secret</td>
+                                <td><input v-model='currentBase.app_secret' name="app_secret" id="app_secret" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>router group</td>
+                                <td><input v-model='currentBase.group' name="group" id="group" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>prefixs(json)</td>
+                                <td><input v-model='currentBase.prefixs' name="prefixs" id="prefixs" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>DefaultDB</td>
+                                <td><input v-model='currentBase.default_db' name="default_db" id="default_db" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>DefaultPrefix</td>
+                                <td><input v-model='currentBase.default_prefix' name="default_prefix" id="default_prefix" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>LoggerDB</td>
+                                <td><input v-model='currentBase.logger_db' name="logger_db" id="logger_db" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>LoggerPrefix</td>
+                                <td><input v-model='currentBase.logger_prefix' name="logger_prefix" id="logger_prefix" type="text" class="form-control"></td>
+                            </tr>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentBase.id' type="hidden" name="id" value="" id="id" />
+                    <input v-model='currentPId' type="hidden" name="report" value="" id="report" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

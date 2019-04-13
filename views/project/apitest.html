@@ -1,0 +1,86 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header with-border">
+</div>
+<!-- /.box-header -->
+
+<!-- form start -->
+<form id="form" class="form-horizontal" role="form" method="post">
+    <div class="box-body">
+
+        <div class="form-group">
+            <label for="report" class="col-sm-2 control-label">ProjectID</label>
+            <div class="col-sm-6">
+                <select v-model="currentReport" class="form-control col-sm-6" id="report" name="report">
+                <option v-for="project in projectList" v-if="project.project_id==currentPId" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+                    <option value="12">report</option>
+                </select>
+            </div>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="userid" class="col-sm-2 control-label">UserID</label>
+
+            <div class="col-sm-6">
+                <input v-model='currentUserID' type="text" class="form-control" id="userid" name="userid" placeholder="UserID">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="path" class="col-sm-2 control-label">请求路径</label>
+
+            <div class="col-sm-6">
+                <input v-model='currentPATH' type="text" class="form-control" id="path" name="path" placeholder="请求路径如:register">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="body" class="col-sm-2 control-label">请求参数</label>
+
+            <div class="col-sm-6">
+                <input v-model='currentBODY' type="text" class="form-control" id="body" name="body" placeholder="json格式请求参数如:{'code':'xxx'}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="result" class="col-sm-2 control-label">响应结果</label>
+
+            <div class="col-sm-6">
+                <textarea v-model='currentResult' class="form-control" id="result" name="result" placeholder="Result"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-danger">Submit</button>
+        </div>
+    </div>
+</form>
+<!-- /.box -->
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueProjectApiTest = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'接口测试',
+            menuTitle:'项目管理',
+            projectList: <<<.Projects>>>,
+            currentPId: <<<.projectId>>>,
+            currentReport: <<<.Report>>>,
+            currentResult: <<<.ResultData>>>,
+            currentUserID: <<<.UserID>>>,
+            currentPATH: <<<.PATH>>>,
+            currentBODY: <<<.BODY>>>,
+        },
+        methods:{
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                if (!this.currentReport) {
+                    this.currentReport = this.currentPId;
+                }
+            })
+        }
+    });
+</script>

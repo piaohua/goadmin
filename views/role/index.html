@@ -1,0 +1,118 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <div class="user-add text-right">
+        <a class="btn btn-info" v-on:click="addedit(0)">创建新角色<i class="fa fa-plus"></i></a>
+    </div>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+        <tr>
+            <th>角色名称</th>
+            <th>描述</th>
+            <th>用户数量</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <tr v-for="role in roleList">
+            <td>{{ role.RoleName }}</td>
+            <td>{{ role.Description }}</td>
+            <td>{{ role.Count }}</td>
+            <td><a class="label" v-bind:class="[role.Status == '1'?'label-success':'label-default']">{{ role.Status == '1' ? '正常' :'禁用' }}</td>
+            <td>
+                <a class="editUser btn btn-xs btn-info text-fill" v-bind:href="'<<<urlfor "RoleController.ViewRole">>>?role_id='+role.RoleId" data-toggle="modal" data-target="#modal">查看<i class="fa fa-street-view"></i></a>
+                <a class="editProject btn btn-xs btn-info text-fill" v-on:click="addedit2(role.RoleId)">查看项目<i class="fa fa-street-view"></i></a>
+                <a class="btn btn-warning btn-xs text-fill"  type="button" v-on:click="addedit(role.RoleId)">修改</a>
+                <a class="editUser btn btn-xs btn-warning text-fill" v-bind:href="'<<<urlfor "RoleController.Access">>>?role_id='+role.RoleId">权限设置<i class="fa fa-edit"></i></a>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/error.html" .>>>
+
+<<<template "role/viewProject.html" .>>>
+
+<<<template "role/indexEdit.html" .>>>
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueRole = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'角色列表',
+            menuTitle:'角色管理',
+            projectList: <<<.Projects>>>,
+            form_url: <<<urlfor "RoleController.Index">>>,
+            pagination:<<<.Pagination>>>,
+            roleList: <<<.RoleData>>>,
+            currentRole:{}
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        methods:{
+            callback(data) {
+                this.pagination.currentPage = data;
+                //var query = $("#form").serialize();
+                //query = query + "&page="+data;
+                var query = "page="+data;
+                //console.log("query ", query);
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.roleList = result.data;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            addedit:function( id ){
+                if( id ){
+                    var data = $.extend( {},this.roleList[id] );
+                    this.currentRole = data;
+                }else{
+                    this.currentRole = {status:1};
+                }
+                $('#modal-Page').modal('show')
+            },
+            addedit2:function( id ){
+                if( id ){
+                    var data = $.extend( {},this.roleList[id] );
+                    this.currentRole = data;
+                }else{
+                    this.currentRole = {status:1};
+                }
+                $('#modal-Page2').modal('show')
+            },
+            submitForm:function(){
+                var query = $("#form_add").serialize();
+                var url = $("#form_add").attr("action");
+                ajaxDev(url,query,'');
+            }
+        }
+    });
+    $(function(){
+        $('body').on('hidden.bs.modal', '.modal', function() {
+            $(this).removeData('bs.modal');
+        });
+    })
+</script>

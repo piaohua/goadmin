@@ -1,0 +1,42 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家任务</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "IdleCraftingController.TaskEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>任务ID</td>
+                                <td><input v-model='currentTask.taskid' name="taskid" id="show_taskid" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>任务内容</td>
+                                <td><input v-model='currentTask.content' name="content" id="show_content" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>任务条件</td>
+                                <td><input v-model='currentTask.info' name="info" id="show_info" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>任务状态</td>
+                                <td><input v-model='currentTask.status' name="status" id="edit_status" type="text" class="form-control"></td>
+                            </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentTask.taskid' type="hidden" name="taskid" value="" id="edit_taskid" />
+                    <input v-model='currentTask.userid' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

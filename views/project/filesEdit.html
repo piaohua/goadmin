@@ -1,0 +1,37 @@
+<!-- ./wrapper -->
+<div id="modal-addPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">编辑文件</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="form_add" action="<<<urlfor "ProjectController.FileEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>项目名称</td>
+                                <td><input v-model="currentFile.project" id="project" name="project" type="text" class="form-control" placeholder="Enter project name" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>文件名称</td>
+                                <td><input v-model="currentFile.name" id="name" name="name" type="text" class="form-control" placeholder="Enter filename" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>文件内容</td>
+                                <td><textarea v-model='currentFile.content' name="content" id="edit_content" type="text" class="form-control"></textarea></td>
+                            </tr>
+                            <input v-model="currentFile.project_id" id="project_id" name="project_id" type="hidden">
+                            <input v-model="currentFile.name" id="name" name="name" type="hidden">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

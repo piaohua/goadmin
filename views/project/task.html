@@ -1,0 +1,124 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+
+        <div class="form-group">
+            <label for="project_id">ProjectID:</label>
+            <select v-model="currentProjectID" class="form-control" id="project_id" name="project_id" disabled>
+                <option value="0">全部</option>
+                <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+        <a style="float:right;margin-right:40px" class="btn btn-info addedit" v-on:click='addedit(null)'>新增配置<i class="fa fa-plus"></i></a>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+        <tr>
+            <th>任务ID</th>
+            <th>任务内容</th>
+            <th>完成条件</th>
+            <th>前置任务</th>
+            <th>后置任务</th>
+            <th>奖励ID</th>
+            <th>修改时间</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        <template v-for="(val,index) in taskList" v-cloak>
+            <tr class="text-green">
+                <td>{{ val.taskid }}</td>
+                <td>{{ val.content }}</td>
+                <td>{{ val.info }}</td>
+                <td>{{ val.before }}</td>
+                <td>{{ val.after }}</td>
+                <td>{{ val.prize }}</td>
+                <td>{{ val.updated_at }}</td>
+                <td>{{ val.created_at }}</td>
+                <td>
+                    <a class="btn btn-xs btn-warning addedit"  v-on:click="addedit(index)">修改</a>
+                </td>
+            </tr>
+        </template>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/error.html" .>>>
+
+<<<template "project/taskEdit.html" .>>>
+
+<<<template "common/vuepagination.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueProjectTask = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'任务列表',
+            menuTitle:'项目管理',
+            pagination:<<<.Pagination>>>,
+            projectList: <<<.Projects>>>,
+            currentProjectID: <<<.ProjectID>>>,
+            currentPId: <<<.projectId>>>,
+            taskList: <<<.TaskData>>>,
+            form_url: <<<urlfor "ProjectController.Task">>>,
+            currentTask:{}
+        },
+        components:{
+            'vue-nav': Vnav
+        },
+        methods:{
+            callback(data) {
+                this.pagination.currentPage = data;
+                var query = $("#form").serialize();
+                var query = query + "page="+data;
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.taskList = result.data;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            addedit:function(pid){
+                if(pid!=null){
+                    this.currentTask = $.extend( {project_id:this.currentProjectID},this.taskList[pid]);
+                }else{
+                    this.currentTask = {project_id:this.currentProjectID};
+                }
+                $('#modal-addPage').modal('show')
+            },
+            submitForm:function(){
+                var query = $("#form_add").serialize();
+                var url = $("#form_add").attr("action");
+                ajaxDev(url,query,'');
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                this.currentProjectID = this.currentPId;
+            })
+        }
+    });
+</script>

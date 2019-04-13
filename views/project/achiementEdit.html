@@ -1,0 +1,57 @@
+<!-- ./wrapper -->
+<div id="modal-addPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">新增/编辑成就</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="form_add" action="<<<urlfor "ProjectController.AchiementEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>成就ID</td>
+                                <td><input  v-model="currentAchiement.achid" id="achid" name="achid" type="text" class="form-control" placeholder="输入成就ID"></td>
+                            </tr>
+                            <tr>
+                                <td>成就类型</td>
+                                <td><input  v-model="currentAchiement.type" id="type" name="type" type="text" class="form-control" placeholder="输入成就类型"></td>
+                            </tr>
+                            <tr>
+                                <td>成就描述</td>
+                                <td><input  v-model="currentAchiement.describe" id="describe" name="describe" type="text" class="form-control" placeholder="输入成就描述"></td>
+                            </tr>
+                            <tr>
+                                <td>完成条件</td>
+                                <td><input  v-model="currentAchiement.condition" id="condition" name="condition" type="text" class="form-control" placeholder="输入成就完成条件"></td>
+                            </tr>
+                            <tr>
+                                <td>前置成就ID</td>
+                                <td><input v-model="currentAchiement.before" id="before" name="before" type="text" class="form-control" placeholder="输入前置成就ID"></td>
+                            </tr>
+                            <tr>
+                                <td>后置成就ID</td>
+                                <td><input v-model="currentAchiement.after" id="after" name="after" type="text" class="form-control" placeholder="输入后置成就ID"></td>
+                            </tr>
+                            <tr>
+                                <td>宝石奖励</td>
+                                <td><input v-model="currentAchiement.jewel" id="jewel" name="jewel" type="text" class="form-control" placeholder="宝石奖励数量"></td>
+                            </tr>
+                            <tr>
+                                <td>积分奖励</td>
+                                <td><input v-model="currentAchiement.integral" id="integral" name="integral" type="text" class="form-control" placeholder="积分奖励数量"></td>
+                            </tr>
+                            <input v-model="currentAchiement.id" id="id" name="id" type="hidden">
+                            <input v-model="currentAchiement.project_id" id="project_id" name="project_id" type="hidden">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

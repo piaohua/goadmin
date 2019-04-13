@@ -1,0 +1,49 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家数据</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "BanziController.BaseEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>userid</td>
+                                <td><input v-model='currentBase.id' name="userid" id="show_userid" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>金币数量</td>
+                                <td><input v-model='currentBase.gold' name="gold" id="edit_gold" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>皮肤解锁</td>
+                                <td><input v-model='currentBase.skin_lock' name="skin_lock" id="edit_skin_lock" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>宠物数值</td>
+                                <td><input v-model='currentBase.pet_count' name="pet_count" id="edit_pet_count" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>最大关卡数</td>
+                                <td><input v-model='currentBase.top_gate' name="top_gate" id="edit_top_gate" type="text" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td>完美通关次数</td>
+                                <td><input v-model='currentBase.perfect_pass' name="perfect_pass" id="edit_perfect_pass" type="text" class="form-control"></td>
+                            </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentBase.id' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

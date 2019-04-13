@@ -1,0 +1,92 @@
+<!-- ./wrapper -->
+<div id="modal-addPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">新增管理员用户</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_add" action="<<<urlfor "SysuserController.Save">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr v-if='currentUser.create'>
+                                <td class="input_require">帐号名称</td>
+                                <td><input v-model='currentUser.UserName' name="username" type="text" class="form-control" placeholder="Enter username"></td>
+                            </tr>
+                            <tr v-if='currentUser.create'>
+                                <td class="input_require">账号密码</td>
+                                <td><input v-model='currentUser.password' name="password" type="password" class="form-control" placeholder="Enter password"></td>
+                            </tr>
+                            <tr v-if='currentUser.create'>
+                                <td class="input_require">再次输入新密码</td>
+                                <td><input v-model='currentUser.pwdcheck' name="pwdcheck" type="password" class="form-control" placeholder="Enter password"/></td>
+                            </tr> 
+                            <tr>
+                                <td class="input_require">邮箱</td>
+                                <td><input v-model='currentUser.Email' name="email" type="email" class="form-control" placeholder="Enter email"></td>
+                            </tr>
+                            <tr>
+                                <td class="input_require">状态</td>
+                                <td>
+                                    <select v-model='currentUser.Status' name="status" class="form-control">
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>真实姓名</td>
+                                <td><input v-model='currentUser.RealName' name="realname" type="text" class="form-control" placeholder="Enter realname"></td>
+                            </tr>
+                            <tr>
+                                <td>角色</td>
+                                <td>
+                                    <select v-model='currentUser.RoleId' name="role_id" class="form-control">
+                                        <option v-for='(role,role_id) in roleList' v-bind:value="role_id" v-cloak>{{ role.RoleName }}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <input v-model="currentUser.UserId" name="user_id" hidden="user_id" type="text">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-resetPwd" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">重置密码</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_resetPwd" role="form" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <input v-model="currentSetPwd.user_id" name="user_id" type="hidden" class="form-control"/>
+                            <tr>
+                                <td>新密码</td>
+                                <td><input v-model="currentSetPwd.password" name="password" type="password" class="form-control" /></td>
+                            </tr>
+                            <tr>
+                                <td>再次输入新密码</td>
+                                <td><input v-model="currentSetPwd.pwdcheck" name="pwdcheck" type="password" class="form-control" /></td>
+                            </tr>                           
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭  </button>
+                <button type="button" class="btn btn-primary" v-on:click="updatePwd(currentSetPwd.user_id,1)">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+{
+    "apps":
+    {
+        "name": "goadmin",
+        "cwd": "./",
+        "script": "./goadmin.sh",
+        "exec_interpreter": "bash",
+        "min_uptime": "60s",
+        "max_restarts": 3,
+        "exec_mode" : "fork_mode",
+        "error_file" : "./goadmin-err.log",
+        "out_file": "./goadmin-out.log",
+        "pid_file": "./goadmin.pid",
+        "watch": false
+    }
+}

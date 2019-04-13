@@ -1,0 +1,34 @@
+<!-- ./wrapper -->
+<div id="modal-editPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改玩家技能</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_edit" action="<<<urlfor "IdleCraftingController.SkillEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>技能ID</td>
+                                <td><input v-model='currentSkill.skill_id' name="skill_id" id="show_skill_id" type="text" class="form-control" disabled></td>
+                            </tr>
+                            <tr>
+                                <td>技能数量</td>
+                                <td><input v-model='currentSkill.number' name="number" id="edit_number" type="text" class="form-control"></td>
+                            </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input v-model='currentSkill.skill_id' type="hidden" name="skill_id" value="" id="edit_skill_id" />
+                    <input v-model='currentSkill.userid' type="hidden" name="userid" value="" id="edit_userid" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

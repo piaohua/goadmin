@@ -1,0 +1,152 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+
+        <div class="form-group">
+            <label for="project_id">ProjectID:</label>
+            <select v-model="currentProjectID" class="form-control" id="project_id" name="project_id" disabled>
+                <option value="0">全部</option>
+                <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="type">类型:</label>
+            <select v-model="currentType" class="form-control" id="type" name="type">
+                <option value="-1">全部</option>
+                <option value="0">正常</option>
+                <option value="1">审核</option>
+                <option value="2">备份</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <div class="form-group">
+            <label for="name">文件名:</label>
+            <input v-model="currentName" name="name" size="20" type="text" class="form-control" id="name" placeholder="请输入文件名">
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/>
+        <a style="float:right;margin-right:40px" class="btn btn-info addedit" v-on:click='addedit(null)'>新增配置<i class="fa fa-plus"></i></a>
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+        <tr>
+            <th>ID</th>
+            <th>文件名</th>
+            <th>类型</th>
+            <th>修改时间</th>
+            <th>创建/备份时间</th>
+            <th>操作</th>
+        </tr>
+        <template v-for="(val,index) in List" v-cloak>
+            <tr class="text-green" v-if="((currentType == val.type || currentType == -1) && (currentName == '' || currentName == val.name || currentName == val.name.substr(14) || val.name.indexOf(currentName) !== -1))">
+                <td>{{ val.id }}</td>
+                <td>{{ val.type == 2 && val.name.length > 14 ? val.name.substr(14) : val.name }}</td>
+                <td v-if="val.type == 0"><a class="label label-success">正常</td>
+                <td v-else-if="val.type == 1"><a class="label label-primary">审核</td>
+                <td v-else><a class="label label-default">备份</td>
+                <td>{{ val.updated_at }}</td>
+                <td>{{ val.created_at }}</td>
+                <td>
+                    <a v-if="val.type == 0" class="viewFiles btn btn-xs btn-info text-fill" v-bind:href="''+API+val.name" target=_blank>查看<i class="fa fa-street-view"></i></a-->
+                    <a class="btn btn-xs btn-warning addedit"  v-on:click="addedit(index)">{{ val.type != 2 ? '修改' : '查看' }}</a>
+                    <button v-if="val.type != 0" class="btn btn-default btn-xs" v-on:click="fileDelete(val.id)">删除</button>
+                    <button v-if="val.type == 2" class="btn btn-default btn-xs" v-on:click="fileRestore(val.id)">恢复</button>
+                    <button v-if="val.type == 0" class="btn btn-default btn-xs" v-on:click="fileSync(val.id)">同步</button>
+                </td>
+            </tr>
+        </template>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/error.html" .>>>
+
+<<<template "project/gamejsonEdit.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueProjectGameJson = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'文件配置',
+            menuTitle:'项目管理',
+            projectList: <<<.Projects>>>,
+            currentProjectID: <<<.ProjectID>>>,
+            currentPId: <<<.projectId>>>,
+            List: <<<.GameJsonData>>>,
+            API: <<<.ProjectAPI>>>,
+            form_url: <<<urlfor "ProjectController.GameJson">>>,
+            delete_url:<<<urlfor "ProjectController.GameJsonDelete">>>,
+            restore_url:<<<urlfor "ProjectController.GameJsonRestore">>>,
+            sync_url:<<<urlfor "ProjectController.GameJsonSync">>>,
+            currentType: -1,
+            currentName: "",
+            currentGameJson:{}
+        },
+        methods:{
+            callback(data) {
+                //this.pagination.currentPage = data;
+                var query = $("#form").serialize();
+                //var query = query + "page="+data;
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            this.List = result.data;
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+            addedit:function(pid){
+                if(pid!=null){
+                    this.currentGameJson = $.extend( {project_id:this.currentProjectID},this.List[pid]);
+                }else{
+                    this.currentGameJson = {project_id:this.currentProjectID};
+                }
+                if (this.currentGameJson.content != null){
+                    this.currentGameJson.content = JSON.stringify(JSON.parse(this.currentGameJson.content), null, 4);
+                }
+                $('#modal-addPage').modal('show')
+            },
+            fileDelete:function(id){
+                ajaxDev(this.delete_url, {id:id,project_id:this.projectID}, '确定要删除配置?');
+            },
+            fileRestore:function(id){
+                ajaxDev(this.restore_url, {id:id,project_id:this.projectID}, '确定要恢复配置?');
+            },
+            fileSync:function(id){
+                ajaxDev(this.sync_url, {id:id,project_id:this.projectID}, '确定要同步配置?');
+            },
+            submitForm:function(){
+                var query = $("#form_add").serialize();
+                var url = $("#form_add").attr("action");
+                ajaxDev(url,query,'确定要修改配置?');
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                this.currentProjectID = this.currentPId;
+            })
+        }
+    });
+</script>

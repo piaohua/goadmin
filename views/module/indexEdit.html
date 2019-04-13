@@ -1,0 +1,82 @@
+<!-- ./wrapper -->
+<div id="modal-addPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">新增/编辑模块</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="form_add" action="<<<urlfor "ModuleController.Save">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>标题</td>
+                                <td><input  v-model="currentModule.Title" id="title" name="title" type="text" class="form-control" placeholder="Enter title"></td>
+                            </tr>
+                            <tr>
+                                <td>父模块</td>
+                                <td>
+                                    <select v-model="currentModule.ParentId" id="parent_id" name="parent_id" class="form-control">
+                                        <option value="0">根模块</option>
+                                        <option v-for="module in moduleList" v-if="module.ModuleId!=currentModule.ModuleId" v-bind:value="module.ModuleId" v-cloak>{{module.Title}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>模块名称</td>
+                                <td><input v-model="currentModule.ModuleName" id="module_name" name="module_name" type="text" class="form-control" placeholder="Enter module name"></td>
+                            </tr>
+                            <tr>
+                                <td>方法名</td>
+                                <td><input v-model="currentModule.MethodName" id="method_name" name="method_name" type="text" class="form-control" placeholder="Enter method_name"></td>
+                            </tr>
+                            <tr>
+                                <td>类型</td>
+                                <td>
+                                    <select v-model="currentModule.Type" id="type" name="type" class="form-control">
+                                        <option value="1">模块</option>
+                                        <option value="2">方法</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>显示在菜单栏</td>
+                                <td>
+                                    <label class="radio-inline">
+                                        <input v-model="currentModule.Show" id="show1" name="show" type="radio" value="1"> 是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input v-model="currentModule.Show" id="show0" name="show" type="radio" value="0"> 否
+                                    </label> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>排序</td>
+                                <td><input v-model="currentModule.Sort" id="sort" name="sort" type="number" class="form-control" placeholder="Enter orders"></td>
+                            </tr>
+                            <tr>
+                                <td>状态</td>
+                                <td>
+                                    <select v-model="currentModule.Status" id="status" name="status" class="form-control">
+                                        <option value="1">正常</option>
+                                        <option value="0">弃用</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>图标<a href="https://adminlte.io/themes/AdminLTE/pages/UI/icons.html" target="_blank">参考</a></td>
+                                <td><input  v-model="currentModule.Icon" id="icon" name="icon" type="text" class="form-control" placeholder="Enter icon"></td>
+                            </tr>
+                            <input v-model="currentModule.ModuleId" id="id" name="id" type="hidden">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

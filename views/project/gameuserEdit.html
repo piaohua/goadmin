@@ -1,0 +1,38 @@
+<!-- ./wrapper -->
+<div id="modal-addPage" class="modal fade modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">新增/编辑配置</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="form_add" action="<<<urlfor "ProjectController.GameuserEdit">>>" method="POST">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>玩家ID</td>
+                                <td><input  v-model="currentGameuser.userid" id="userid" name="userid" type="text" class="form-control" placeholder="Enter userid"></td>
+                            </tr>
+                            <tr>
+                                <td>白名单状态</td>
+                                <td>
+                                    <select v-model="currentGameuser.prize" id="prize" name="prize" class="form-control">
+                                        <option value="1">开启</option>
+                                        <option value="0">关闭</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <input v-model="currentGameuser.id" id="id" name="id" type="hidden">
+                            <input v-model="currentGameuser.project_id" id="project_id" name="project_id" type="hidden">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary btn-info pull-right" v-on:click="submitForm">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>

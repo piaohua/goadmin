@@ -1,0 +1,86 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form_upload" class="form-inline" method="POST" enctype="multipart/form-data" action="<<<urlfor "ProjectController.FileUpload">>>">
+        <input v-model="projectID" id="project_id" name="project_id" type="hidden">
+        <!--div class="box-body">
+            <div class="form-group">
+                <label for="uploadFile">File input</label>
+                <input type="file" name="uploadFile" id="uploadFile">
+            </div>
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary">上传</button>
+            </div>
+        </div-->
+        <!-- /.box-body -->
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+        <tr>
+            <th>项目名称</th>
+            <th>文件名称</th>
+            <th>文件大小</th>
+            <th>文件修改时间</th>
+            <th>操作</th>
+        </tr>
+        <template v-for="(file,index) in filesList" v-cloak>
+            <tr role="row" class="odd">
+                <td>{{ file.project }}</td>
+                <td>{{ file.name }}</td>
+                <td>{{ file.size }}</td>
+                <td>{{ file.time }}</td>
+                <td>
+                    <a class="viewFiles btn btn-xs btn-info text-fill" v-bind:href="''+file.href" target=_blank>查看<i class="fa fa-street-view"></i></a>
+                    <button class="btn btn-xs btn-warning text-fill" v-on:click='addedit(index)'>修改</button>
+                    <!--button class="btn btn-default btn-xs" v-on:click="fileDownload(file.name)">下载</button-->
+                    <!--button class="btn btn-default btn-xs" v-on:click="fileDelete(file.name)">删除</button-->
+                </td>
+            </tr>
+        </template>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "project/filesEdit.html" .>>>
+
+<<<template "common/contentFooter.html" .>>>
+
+<script>
+    var vueProjectFiles = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        data: {
+            pageTitle:'文件列表',
+            menuTitle:'项目管理',
+            //download_url:<<<urlfor "ProjectController.FileDownload">>>,
+            delete_url:<<<urlfor "ProjectController.FileDelete">>>,
+            filesList: <<<.FilesData>>>,
+            projectID: <<<.ProjectID>>>,
+            currentFile:{}
+        },
+        methods:{
+            addedit:function(pid){
+                if(pid!=null){
+                    this.currentFile = $.extend( {project_id:this.projectID},this.filesList[pid]);
+                }else{
+                    this.currentFile = {project_id:this.projectID};
+                }
+                $('#modal-addPage').modal('show')
+            },
+            //fileDownload:function(fileName){
+            //    ajaxDev(this.download_url, {fileName:fileName}, '');
+            //},
+            fileDelete:function(fileName){
+                ajaxDev(this.delete_url, {fileName:fileName,project_id:this.projectID}, '');
+            },
+            submitForm:function(){
+                var query = $("#form_add").serialize();
+                var url = $("#form_add").attr("action");
+                //console.log(query);
+                ajaxDev(url,query,'确定要修改配置?');
+            }
+        }
+    });
+</script>

@@ -1,0 +1,169 @@
+<<<template "common/contentHeader.html" .>>>
+
+<div class="box-header">
+    <form id="form" class="form-inline" role="form" v-on:submit.prevent='callback(1)'>
+
+        <div class="form-group">
+            <label for="project_id">ProjectID:</label>
+            <select v-model="currentProjectID" class="form-control" id="project_id" name="project_id" disabled>
+                <option value="0">全部</option>
+                <option v-for="project in projectList" v-bind:value="project.project_id" v-cloak>{{project.name}}</option>
+            </select>
+            <!-- /.input group -->
+        </div>
+
+        <!--div class="form-group">
+            <label for="dateat">Date:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input name="dateat" class="form-control pull-right" id="datepicker" type="text" value="<<<.Dateat>>>" placeholder="请输入日期" readonly>
+            </div>
+
+            <div class="input-group">
+                <input name="timeat" id="timeat" type="text" value="<<<.Timeat>>>" class="form-control timepicker" readonly>
+                <div class="input-group-addon">
+                    <i class="fa fa-clock-o"></i>
+                </div>
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-info" value="查询"/-->
+    </form>
+</div>
+<!-- /.box-header -->
+
+<div class="box-header with-border">
+    <i class="fa fa-bar-chart-o"></i>
+
+    <h3 class="box-title">{{pageTitle}}</h3>
+
+</div>
+<!-- /.box-header -->
+
+<div class="box-body table-responsive no-padding">
+    <template>
+        <ve-bar :data="chartData"></ve-bar>
+    </template>
+</div>
+<!-- /.box-body -->
+
+<div class="box-body table-responsive no-padding">
+    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+
+        <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="activate to sort column descending">渠道</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">注册人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">DAU人数</th>
+                <th class="sorting" tabindex="0" aria-controls="example2" rowspan="1" colspan="1" aria-label="activate to sort column ascending">登录人数</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="val in List" v-cloak>
+                <tr role="row" class="odd">
+                    <td>{{ val.source_id }}</td>
+                    <td>{{ val.regist }}</td>
+                    <td>{{ val.dau }}</td>
+                    <td>{{ val.dau - val.regist }}</td>
+                </tr>
+            </template>
+        </tbody>
+
+    </table>
+</div>
+<!-- /.box-body -->
+
+<<<template "common/contentFooter.html" .>>>
+
+<script src="//cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="//cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/v-charts/lib/index.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/v-charts/lib/style.min.css">
+
+<script>
+    var vueReportRealToday = new Vue({
+        el: "#content_<<<.Module>>>_<<<.Action>>>",
+        methods:{
+            list2rows: function () {
+                //console.log(this.List);
+                var rows = new Array();
+                for ( var i in this.List ) {
+                    for ( var j in this.List3 ) {
+                        if (this.List3[j].source_id == this.List[i].source_id) {
+                            this.List[i].source_id = this.List3[j].name;
+                            break;
+                        }
+                    }
+                    var row = { '渠道': this.List[i].source_id,
+                        '注册人数': this.List[i].regist,
+                        '登录人数': this.List[i].dau - this.List[i].regist,
+                        'DAU': this.List[i].dau };
+                    rows.push(row);
+                }
+                //console.log(rows);
+                //rows.reverse();
+                return rows
+            },
+            callback(data) {
+                var query = $("#form").serialize();
+                var dateat = $("#datepicker").val();
+                var timeat = $("#timeat").val();
+                var time = new Date(dateat + " " + timeat);
+                var timestamp = Math.round(time.getTime()/1000);
+                if (!isNaN(timestamp)){
+                    var query = query + "&timestamp=" + timestamp;
+                }
+                axios.post(this.form_url, query)
+                    .then( (response) => {
+                        var result = response.data;
+                        //console.log("response ", result);
+                        if (result.code==200){
+                            //TODO
+                        }else{
+                            $('#modal-error').modal('show')
+                            setTimeout(function () {
+                                $('#modal-error').modal('hide');
+                            }, 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log("error: ", error);
+                        $('#modal-error').modal('show')
+                        setTimeout(function () {
+                            $('#modal-error').modal('hide');
+                        }, 3000);
+                    })
+            },
+        },
+        data () {
+            this.pageTitle = '实时渠道'
+            this.menuTitle = '统计管理'
+            this.projectList = <<<.Projects>>>
+            this.currentProjectID = <<<.ProjectID>>>
+            this.currentPId = <<<.projectId>>>
+            this.List = <<<.TodayData>>>
+            this.List1 = <<<.RegistData>>>
+            this.List2 = <<<.LoginData>>>
+            this.List3 = <<<.Sources>>>
+            this.form_url = <<<urlfor "ReportController.Realtoday">>>
+            this.currentProjectID = this.currentPId
+            return {
+                List:  this.List,
+                List1: this.List1,
+                List2: this.List2,
+                List3: this.List3,
+                chartData: {
+                    columns: ['渠道', '注册人数', '登录人数', 'DAU'],
+                    rows: this.list2rows()
+                }
+            }
+        },
+        computed:{
+        },
+        filters:{
+        }
+    });
+</script>
