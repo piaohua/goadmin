@@ -153,7 +153,7 @@ CREATE TABLE `system_user` (
 
 LOCK TABLES `system_user` WRITE;
 /*!40000 ALTER TABLE `system_user` DISABLE KEYS */;
-INSERT INTO `system_user` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','admin@misaiyer.com','Admin',1,1,'2017-08-28 00:00:00'),(2,'idlecrafting','9739ceb2f5cb07ae37acfe67bdfbc92f','814004090@qq.com','IdleCrafting',2,1,'2018-10-13 01:03:55');
+INSERT INTO `system_user` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','admin@misaiyer.com','Admin',1,1,'2017-08-28 00:00:00'),(2,'idlecrafting','9739ceb2f5cb07ae37acfe67bdfbc92f','admin@qq.com','IdleCrafting',2,1,'2018-10-13 01:03:55');
 /*!40000 ALTER TABLE `system_user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
